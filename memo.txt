@@ -1,0 +1,32 @@
+[jango install]
+sm@jango:~$ cd /usr/bin/
+sm@jango:/usr/bin$ sudo ln -s python3 python
+sm@jango:~$ sudo apt install python3.8-venv
+sm@jango:~$ sudo apt install python3-pip
+sm@jango:~$ python -m venv myVenv
+
+sm@jango:~/myVenv$ source ./bin/activate
+(myVenv) sm@jango:~/myVenv$
+(myVenv) sm@jango:~/myVenv$ pip install Django
+(myVenv) sm@jango:~/myVenv$ pip install djangorestframework
+(myVenv) sm@jango:~/myVenv/_MyProject_SMART$ python manage.py runserver  0.0.0.0:32128
+
+[ssh 접속]
+host: ssmsoft.iptime.org:32122
+ID: sm
+PWD: qwer147852.
+
+[jango admin]
+path: ~/myVenv/_MyProject_SMART
+run python manage.py runserver  0.0.0.0:32128
+URL: http://ssmsoft.iptime.org:32128/
+
+[jango id/pwd]
+ID: admin
+PWD: qwer147852.
+
+ID: miju
+PWD: qwer147852.
+
+ID: jeongdong
+PWD: qwer147852.

@@ -1,0 +1,20 @@
+
+/*
+position
+  *static, relative, absolute, fixed, sticky, unset, inherit, initial
+display
+  inline, inline-block, block
+float
+  left, right, *none
+*/
+html,body {
+  margin: 0px;
+  padding: 0px;
+}
+a:link { color: red; text-decoration: none;}
+a:visited { color: black; text-decoration: none;}
+a:hover { color: blue; text-decoration: underline;}
+
+.inlineBlickForm{
+  display: inline-block;
+}

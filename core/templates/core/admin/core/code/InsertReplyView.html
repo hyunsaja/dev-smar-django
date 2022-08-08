@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static  'zyyy/css/css.css' %}"/>
+<script DEFER src="{% static  'zyyy/js/js.js' %}" type="text/javascript"></script>
+
+
+<form>
+    {% csrf_token %}
+	<div class="tableStyle" style="">
+		<ul class="title" style="">
+            {% for field in forms.visible_fields %}
+            <li style="background: #eee;">{{ field.label_tag }}</li>
+            {% endfor %}
+			<!-- =========================================================== -->
+			<li style="background: #eee;">저장</li>
+		</ul>
+
+		<ul>
+            {% for field in forms.visible_fields %}
+			<li style="">{{ field }}</li>
+            {% endfor %}
+			<!-- =========================================================== -->
+			<li style=""><input type="button" value="Submit"
+				id="_submit_zyyy_InsertReply" method="POST"
+				enctype="application/x-www-form-urlencoded"
+				action="{% url 'zyyy_InsertReply' %}" targetID="zyyy_ContentDiv" cmd="1" /></li>
+		</ul>
+	</div>
+
+</form>
