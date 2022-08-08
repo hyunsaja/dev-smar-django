@@ -2,6 +2,11 @@ from django.contrib import admin
 
 # Register your models here.
 
+admin.site.site_header = 'Smart Robot'
+admin.site.site_title = 'Smart Robot'
+admin.site.title = 'Smart Robot'
+
+
 from django.urls import path, include
 from django.template.response import TemplateResponse
 # from django.conf.urls import url
@@ -36,8 +41,8 @@ class CodeAdmin(admin.ModelAdmin):
     change_list_template = "admin/core/code/_change_list.html"
 
     list_display = (
-    "gNumber", "gSubNumber", "gDeep", "aNumber", "show_firm_url", "my_avarchar",
-    "aint", "aint_count", "auser", "adate")
+        "gNumber", "gSubNumber", "gDeep", "aNumber", "show_firm_url", "my_avarchar", "aint", "aint_count", "auser", "adate"
+    )
     search_fields = ("avarchar",)
     fields = ("avarchar", "aint", "atext")
     list_display_links = ['my_avarchar']
@@ -172,8 +177,6 @@ class CodeAdmin(admin.ModelAdmin):
 
 # =============================================================================================
 from core.models import Company
-
-
 @admin.register(Company)
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ("id", "name", "address", "phone", "astatus", "adate",)
@@ -184,16 +187,20 @@ class CompanyAdmin(admin.ModelAdmin):
 
 
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-from django.contrib.auth.models import User
-from .models import UserDetail
-
-admin.site.site_header = '사이트 타이틀'
-admin.site.site_title = '사이트 타이틀'
-admin.site.title = '사이트 타이틀'
-
 
 # Define an inline admin descriptor for Employee model
 # which acts a bit like a singleton
+from django.contrib.auth.models import User
+from .models import UserDetail
+
+@admin.register(UserDetail)
+class UserDetailAdmin(admin.ModelAdmin):
+    list_display = ("user", "department", "phone",)
+    search_fields = ("user",)
+
+
+
+
 class UserDetailInline(admin.StackedInline):
     model = UserDetail
     can_delete = False
@@ -210,17 +217,13 @@ class UserAdmin(BaseUserAdmin):
         return super(UserAdmin, self).get_inline_instances(request, obj)
 
 
-# Re-register UserAdmin
-admin.site.unregister(User)
-admin.site.register(User, UserAdmin)
+
 
 # =============================================================================================
 
-from core.models import UserDetail
+# from core.models import UserDetail
 
-
-@admin.register(UserDetail)
-class UserDetailAdmin(admin.ModelAdmin):
-    list_display = ("user", "department", "phone",)
-    search_fields = ("user",)
+# Re-register UserAdmin
+admin.site.unregister(User)
+admin.site.register(User, UserAdmin)
 

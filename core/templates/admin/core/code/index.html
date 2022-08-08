@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+{% load static %}
+
+
+<div id="zyyy_Header"></div>
+
+<div id="zyyy_Article">
+    <div id="zyyy_EventDiv" style="background: #eeffff;"></div>
+    <div id="zyyy_ContentDiv" style="background: #ffeeff; margin-top: 25px; height: 450px; overflow: auto;"></div>
+</div>
+
+<div id="zyyy_Footer"></div>
+
+
+<input type="button" name="autoRun" id="_submit_zyyy_Insert" action="{% url 'zyyy_InsertView' %}" targetID="zyyy_EventDiv"
+       value=""/>
+
+<input type="button" name="autoRun" id="_submit_zyyy_Select" action="{% url 'zyyy_SelectView' %}" targetID="zyyy_ContentDiv"
+       value=""/>

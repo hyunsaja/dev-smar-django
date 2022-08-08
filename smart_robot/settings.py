@@ -34,9 +34,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'core',
     'machine',
-    # 'biz_master',
-    # 'bot_master',
-    # 'cam_master',
+    'biz_master',
+    'bot_master',
+    'cam_master',
     'code_master',
 
     'django.contrib.admin',

@@ -58,7 +58,6 @@ class UserDetail(models.Model):
     company = models.ForeignKey(Company, on_delete=models.CASCADE, default=1)
     phone = models.CharField(max_length=32)
     department = models.IntegerField(choices=Code.objects.values_list('aint', 'avarchar').filter(gNumber=4).filter(aint__gt=-1))
-    phone = models.CharField(max_length=100)
 
     class Meta:
         # managed = False

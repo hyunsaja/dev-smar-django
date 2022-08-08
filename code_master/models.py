@@ -40,7 +40,6 @@ from machine.models import Machine
 
 class CodeMaster(models.Model):
     id = models.AutoField(primary_key=True)
-
     machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)  # 장비ID
     ship_no = models.CharField(max_length=10)  # 호선
     por_no = models.CharField(max_length=10)  # POR

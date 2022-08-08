@@ -1,0 +1,10 @@
+<!DOCTYPE html>
+<ul style="">
+    <a href="{% url 'CodeInsertView' %}">write</a>
+    {% if rows %}
+    {% for row in rows %}
+    <li style="">{{row}}</li>
+    {% endfor %}
+    {% endif %}
+</ul>
+
