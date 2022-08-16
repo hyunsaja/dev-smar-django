@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<!-- saved from url=(0119)file:///E:/App/apache-tomcat-8.5.46-windows-x64/webapps/ROOT/svg/09_%EC%84%B1%EB%8A%A5%ED%85%8C%EC%8A%A4%ED%8A%B8i.html -->
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>SVG-bad.js</title>
+</head>
+<body>
+    <svg width="800" height="600" id="mySVG">
+	
+	<rect onmouseout="hideTooltip();" onmousedown="showTooltip(event, 'atooltip');" x="311" y="445" width="12" height="29" style="stroke: black; fill: #63566A;"></rect>
+	<circle onmouseout="hideTooltip();" onmousedown="showTooltip(event, 'atooltip');" cx="268" cy="224" r="1" style="stroke: black; fill: #3D388F;"></circle> 
+	<path onmouseout="hideTooltip();" onmousedown="showTooltip(event, 'atooltip');" d="M279 50  C 279 50 279 50 279 50  S 279 50 279 50 " style="stroke:#FC78F2; fill:none; stroke-width:6px; stroke-linecap:round;"></path>
+	<text onmouseout="hideTooltip();" onmousedown="showTooltip(event, 'atooltip');" x="313" y="485" style="stroke: #E3C5B7; fill: none; font-size:3px;"> Hello HSHI No 313th !!! </text>
+	</svg>
+
+    
+    <div id="tooltip" display="none" style="position: absolute; display: none; background: cornsilk; border: 1px solid black; border-radius: 5px; padding: 5px;">
+    </div>
+    <button onclick="myCreateElement();">성능테스트i</button>
+
+    <script type="text/javascript">
+        function getRandomNumber(min, max) {
+            var ranNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            return ranNum;
+        }
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+        function makeDraggable(evt) {
+            var svg = evt.target;
+            svg.addEventListener('mousedown', startDrag);
+            svg.addEventListener('mousemove', drag);
+            svg.addEventListener('mouseup', endDrag);
+            svg.addEventListener('mouseleave', endDrag);
+            function startDrag(evt) {
+                let tooltip = document.getElementById("tooltip");
+                tooltip.innerHTML = "text";
+                tooltip.style.display = "block";
+                tooltip.style.left = evt.pageX + 10 + 'px';
+                tooltip.style.top = evt.pageY + 10 + 'px';
+            }
+            function drag(evt) {
+                let tooltip = document.getElementById("tooltip");
+                tooltip.innerHTML = "text";
+                tooltip.style.display = "block";
+                tooltip.style.left = evt.pageX + 10 + 'px';
+                tooltip.style.top = evt.pageY + 10 + 'px';
+            }
+            function endDrag(evt) {
+                var tooltip = document.getElementById("tooltip");
+                tooltip.style.display = "none";
+            }
+        }
+        function showTooltip(evt, text) {
+            let tooltip = document.getElementById("tooltip");
+            tooltip.innerHTML = text;
+            tooltip.style.display = "block";
+            tooltip.style.left = evt.pageX + 10 + 'px';
+            tooltip.style.top = evt.pageY + 10 + 'px';
+        }
+        function hideTooltip() {
+            var tooltip = document.getElementById("tooltip");
+            tooltip.style.display = "none";
+        }
+
+        function myCreateElement() {
+           //이 값을 변경해보면서
+            var groupCount = 3;
+            var count = 10;
+
+            var totlaCount = 0;
+
+            var width = 800;
+            var height = 600;
+            var size = 30;
+            var tab = 20;
+
+
+            var svg = document.getElementById("mySVG");
+
+            var startTime = new Date().getTime();
+
+            for (var i = 0; i < groupCount; i++) {
+
+                var middleStartTime = new Date().getTime();
+
+                for (var j = 0; j < count; j++) {
+                    var axp = getRandomNumber(0, width);
+                    var ayp = getRandomNumber(0, height);
+                    var awidth = getRandomNumber(5, size);
+                    var aheight = getRandomNumber(5, size);
+
+                    var aradius = getRandomNumber(5, size);
+                    var atab = getRandomNumber(10, tab);
+                    var atext = "Hello HSHI No " + axp + "th !!!";
+
+                    var afill = getRandomColor();
+                    var atooltip = "NAME: NAME IS " + axp + "<br/>POINT X: 1234567890<br/>1234567890<br/>POINT Y: 1234567890<br/>1234567890<br/>CONTENT: abcdefghijklmnoporstuvwxyz<br/>가나다라마바사아자차카타파하<br/>ABCDEFGHIJKLMNOPORSTUVWXYZ<br/>도래미파솔라시도<br/>CDEFGABC";
+
+                    var csg =
+                        "<rect  onmouseout ='hideTooltip();' onmousedown=\"showTooltip(event, '" + atooltip + "');\"  " +
+                        "x = '" + axp + "' y = '" + ayp + "' width = '" + awidth + "' height = '" + aheight + "' " +
+                        " style = 'stroke: black; fill: " + afill + ";' /> ";
+
+
+                    var axp = getRandomNumber(0, width);
+                    var ayp = getRandomNumber(0, height);
+                    var awidth = getRandomNumber(0, size);
+                    var aheight = getRandomNumber(0, size);
+
+                    var aradius = getRandomNumber(0, size);
+                    var atab = getRandomNumber(0, tab);
+                    var atext = "Hello HSHI No " + axp + "th !!!";
+
+                    var afill = getRandomColor();
+                    //var
+                    csg +=
+                        "<circle  onmouseout ='hideTooltip();' onmousedown=\"showTooltip(event, '" + atooltip + "');\"  " +
+                        "  cx='" + axp + "' cy='" + ayp + "' r='" + aradius + "' " +
+                        " style = 'stroke: black; fill: " + afill + ";' /> ";
+
+
+                    var axp = getRandomNumber(0, width);
+                    var ayp = getRandomNumber(0, height);
+                    var awidth = getRandomNumber(0, size);
+                    var aheight = getRandomNumber(0, size);
+
+                    var aradius = getRandomNumber(0, size);
+                    var atab = getRandomNumber(0, tab);
+                    var atext = "Hello HSHI No " + axp + "th !!!";
+
+                    var afill = getRandomColor();
+                    //var
+                    csg +=
+                        "<path  onmouseout ='hideTooltip();' onmousedown=\"showTooltip(event, '" + atooltip + "');\"  " +
+                        " d = '" +
+
+                        "M" +
+                        axp + " " +
+                        ayp + " " +
+
+                        " C " +
+                        (axp + atab) + " " +
+                        (ayp - atab) + " " +
+
+                        (axp + atab * 2) + " " +
+                        (ayp - atab) + " " +
+
+                        (axp + atab * 3) + " " +
+                        ayp + " " +
+
+                        " S " +
+                        (axp + atab * 4) + " " +
+                        (ayp + atab) + " " +
+
+                        (axp + atab * 6) + " " +
+                        ayp + " " +
+
+                        "'" +
+                        " style = 'stroke:" + afill + "; fill:none; stroke-width:6px; stroke-linecap:round;' /> ";
+
+                    var axp = getRandomNumber(0, width);
+                    var ayp = getRandomNumber(0, height);
+                    var awidth = getRandomNumber(0, size);
+                    var aheight = getRandomNumber(0, size);
+
+                    var aradius = getRandomNumber(0, size);
+                    var atab = getRandomNumber(0, tab);
+                    var atext = "Hello HSHI No " + axp + "th !!!";
+
+                    var afill = getRandomColor();
+                    //var
+                    csg +=
+                        "<text  onmouseout ='hideTooltip();' onmousedown=\"showTooltip(event, '" + atooltip + "');\"  " +
+                        " x='" + axp + "' y='" + ayp + "' " +
+                        " style = 'stroke: " + afill + "; fill: none; font-size:" + atab + "px;' > " + atext + " </text >";
+
+                    svg.innerHTML += csg;
+                    totlaCount++;
+                }//for
+
+                var middleEndTime = new Date().getTime();
+
+                console.log(totlaCount + "ea, " + "1 cycle time: " + (middleEndTime - middleStartTime) / 1000);
+                console.log("accumulate time: " + (middleEndTime - startTime) / 1000);
+            }
+            //for
+
+            var endTIme = new Date().getTime();
+            console.log("whole " + totlaCount + "ea, " + "time: " + (endTIme - startTime) / 1000);
+        }//myCreateElement
+
+    </script>
+
+
+
+
+</body></html>

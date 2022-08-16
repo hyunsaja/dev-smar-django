@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>SVG-create.js</title>
+</head>
+<body>
+
+    <button onclick="myCreateElement();">create</button>
+
+    <script type="text/javascript">
+
+        function getRandomNumber(min, max) {
+            var ranNum = Math.floor(Math.random() * (max - min + 1)) + min;
+            return ranNum;
+        }
+        function getRandomColor() {
+            var letters = '0123456789ABCDEF';
+            var color = '#';
+            for (var i = 0; i < 6; i++) {
+                color += letters[Math.floor(Math.random() * 16)];
+            }
+            return color;
+        }
+
+
+        //https://er1ca.tistory.com/8
+
+        var svg = document.createElementNS("http://www.w3.org/2000/svg", "svg");
+        svg.setAttribute('width', 800);
+        svg.setAttribute('height', 600);
+        svg.setAttribute('style', 'background-color:#eeeeee');
+        //svg.setAttribute('style', 'stroke: black;');
+        var svgNS = svg.namespaceURI;
+        document.body.appendChild(svg);
+
+
+        function myCreateElement() {
+            //이 값을 변경해보면서
+            var groupCount = 2;
+
+
+            var totlaCount = 0;
+
+            var width = 800;
+            var height = 600;
+            var size = 30;
+            var tab = 20;
+
+            var axp = 0;
+            var ayp = 0;
+            var awidth = 0;
+            var aheight = 0;
+            var aradius = 0;
+            var atab = 0;
+            var afill = 0;
+
+
+
+            var startTime = new Date().getTime();
+
+            for (var i = 0; i < groupCount; i++) {
+
+                var middleStartTime = new Date().getTime();
+
+                //===============================================
+                var countR = getRandomNumber(0, 10);
+                console.log("count(rect): " + countR);
+                for (var j = 0; j < countR; j++) {
+                    axp = getRandomNumber(0, width);
+                    ayp = getRandomNumber(0, height);
+                    awidth = getRandomNumber(5, size);
+                    aheight = getRandomNumber(5, size);
+                    aradius = getRandomNumber(5, size);
+                    atab = getRandomNumber(10, tab);
+                    afill = getRandomColor();
+
+                    var rect = document.createElementNS(svgNS, 'rect');
+                    rect.setAttribute('x', axp);
+                    rect.setAttribute('y', ayp);
+                    rect.setAttribute('width', awidth);
+                    rect.setAttribute('height', aheight);
+                    rect.setAttribute('fill', afill);
+                    rect.setAttribute('style', 'stroke: black;');
+                    svg.appendChild(rect);
+                }//for j
+
+                //===============================================
+                var countC = getRandomNumber(0, 10);
+                console.log("count(circle): " + countC);
+                for (var j = 0; j < countC; j++) {
+                    axp = getRandomNumber(0, width);
+                    ayp = getRandomNumber(0, height);
+                    awidth = getRandomNumber(5, size);
+                    aheight = getRandomNumber(5, size);
+                    aradius = getRandomNumber(5, size);
+                    atab = getRandomNumber(10, tab);
+                    afill = getRandomColor();
+
+                    var circle = document.createElementNS(svgNS, 'circle');
+                    circle.setAttribute('cx', axp);
+                    circle.setAttribute('cy', ayp);
+                    circle.setAttribute('r', aradius);
+                    circle.setAttribute('fill', afill);
+                    circle.setAttribute('style', 'stroke: black;');
+                    svg.appendChild(circle);
+
+
+                }//for j
+
+                //===============================================
+                var countP = getRandomNumber(0, 10);
+                console.log("count(path): " + countP);
+                for (var j = 0; j < countP; j++) {
+                    axp = getRandomNumber(0, width);
+                    ayp = getRandomNumber(0, height);
+                    awidth = getRandomNumber(5, size);
+                    aheight = getRandomNumber(5, size);
+                    aradius = getRandomNumber(5, size);
+                    atab = getRandomNumber(10, tab);
+                    afill = getRandomColor();
+
+                    var path = document.createElementNS(svgNS, 'path');
+                    path.setAttribute('d',
+                        "M " +
+                        axp + " " +
+                        ayp + " " +
+
+                        " C " +
+                        (axp + atab) + " " +
+                        (ayp - atab) + " " +
+
+                        (axp + atab * 2) + " " +
+                        (ayp - atab) + " " +
+
+                        (axp + atab * 3) + " " +
+                        ayp + " " +
+
+                        " S " +
+                        (axp + atab * 4) + " " +
+                        (ayp + atab) + " " +
+
+                        (axp + atab * 6) + " " +
+                        ayp + " "
+                    );
+                    path.setAttribute('style', 'stroke:' + afill + '; fill:none; stroke-width:6px; stroke-linecap:round;');
+                    svg.appendChild(path);
+
+
+
+                }//for j
+
+                //===============================================
+                var countT = getRandomNumber(0, 10);
+                console.log("count(text): " + countT);
+                for (var j = 0; j < countT; j++) {
+                    axp = getRandomNumber(0, width);
+                    ayp = getRandomNumber(0, height);
+                    awidth = getRandomNumber(5, size);
+                    aheight = getRandomNumber(5, size);
+                    aradius = getRandomNumber(5, size);
+                    atab = getRandomNumber(10, tab);
+                    afill = getRandomColor();
+
+                    var svgTxt = document.createElementNS(svgNS, 'text');
+                    svgTxt.setAttribute('x', axp);
+                    svgTxt.setAttribute('y', ayp);
+                    //svgTxt.setAttribute('r', aradius);
+                    //svgTxt.setAttribute('fill', afill);
+                    svgTxt.setAttribute('style', 'stroke: ' + afill + '; fill: none; font-size:' + atab + 'px;');
+                    var svgTxtString = document.createTextNode('Hello SHS');
+                    svgTxt.appendChild(svgTxtString);
+                    svg.appendChild(svgTxt);
+
+
+
+                }//for j
+
+                var middleEndTime = new Date().getTime();
+
+                console.log(totlaCount + "ea, " + "1 cycle time: " + (middleEndTime - middleStartTime) / 1000);
+                console.log("accumulate time: " + (middleEndTime - startTime) / 1000);
+
+            }//for i
+            var endTIme = new Date().getTime();
+            console.log("whole " + totlaCount + "ea, " + "time: " + (endTIme - startTime) / 1000);
+        }//function
+
+
+
+
+    </script>
+
+</body>
+</html>

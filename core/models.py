@@ -55,9 +55,9 @@ class Company(models.Model):
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
-    company = models.ForeignKey(Company, on_delete=models.CASCADE, default=1)
-    phone = models.CharField(max_length=32)
-    department = models.IntegerField(choices=Code.objects.values_list('aint', 'avarchar').filter(gNumber=4).filter(aint__gt=-1))
+    company = models.OneToOneField(Company, on_delete=models.CASCADE)
+    department = models.IntegerField(choices=Code.objects.values_list('aint','avarchar').filter(gNumber=1).filter(aint__gt=0))
+    phone = models.CharField(max_length=100)
 
     class Meta:
         # managed = False

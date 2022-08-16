@@ -1,3 +1,95 @@
+
+---------------------------------------------------------------------------
+[ db 최초 빌드시 migrations 순서]
+---------------------------------------------------------------------------
+1. settings의 모든 앱을 주석처리하고 migrate 한다.
+    python manage.py migrate
+2. core 앱의 user detail 부분을 models, admin 파일에서 주석처리하고 마이그레이션 실행
+    python manage.py makemigrations
+    python manage.py migrate
+3. core 앱의 user detail 부분을 주석 풀고 마이그레이션 한다.
+    상동
+4. machine 앱을 마이그레이션 한다.
+    상동
+5. 나머지 앱들을 모두 풀고 마이그레이션 한다.
+    상동
+6. python manage.py createsuperuser
+7. python manage.py runserver
+
+
+----------------------------------------------------------------------------
+[ec2 설정]
+----------------------------------------------------------------------------
+
+[django_admin ec2 ip] : 43.200.163.232
+
+1. 인스턴스 생성 : 보안그룹 - 인바운드 규칙 추가
+
+2. ssh 접속하여 docker 및 portainer설치(아래 명령을 순서대로 실행)
+'''
+sudo yum update
+sudo amazon-linux-extras install docker -y
+sudo service docker start
+sudo usermod -a -G docker ec2-user
+sudo yum install git -y
+sudo curl -L "https://github.com/docker/compose/releases/download/1.29.1/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+sudo chmod +x /usr/local/bin/docker-compose
+sudo ln -s /usr/local/bin/docker-compose /usr/bin/docker-compose
+'''
+
+3. 포테이너 설치(옵션사항)
+'''
+sudo docker volume create portainer_data
+sudo docker run -d -p 9000:9000 --name portainer --restart=always -v /var/run/docker.sock:/var/run/docker.sock -v portainer_data:/data portainer/portainer-ce:latest
+sudo docker swarm init
+'''
+
+4. home 디렉토리에 smart-robot-kr 폴더 생성후
+cd ..
+sudo mkdir smart-robot-kr
+sudo chmod 777 smart-robot-kr
+cd smart-robot-kr
+
+5. Bitvise를 이용하여 파일 전송(가상환경관련제외)
+
+6. 장고 설치(manage.py 사용을 위해)
+sudo python3 -m pip install Django
+
+6. sudo docker-compose up -d --build
+    sudo docker-compose exec web python manage.py migrate  # 볼륨 삭제후 도커 실행시
+    sudo docker-compose exec web python manage.py createsuperuser  # 볼륨 삭제후 도커 실행시
+    sudo docker-compose exec web python manage.py collectstatic
+
+** 도커 컴포즈 명령어(볼륨까지 지울때)
+    docker-compose down -v
+    docker-compose logs
+    sudo find . -path "*/migrations/*.py" -not -name "__init__.py" -delete
+    sudo find . -path "*/migrations/*.pyc"  -delete
+    docker-compose exec web python manage.py migrate  # 볼륨 삭제후 도커 실행시
+    docker-compose exec web python manage.py createsuperuser  # 볼륨 삭제후 도커 실행시
+
+** postgres db 사용시 인스톨 해줘야함 : psycopg2-binary==2.8.6
+** static 파일 모으기 : python manage.py collectstatic
+** 도커 개발 모드 실행 : docker-compose -f docker-compose.dev.yml up --build
+
+** 장고 시크릿키 만들기
+    python manage.py shell
+    from django.core.management.utils import get_random_secret_key
+    get_random_secret_key()
+
+** 도커 피일 청소 스크립트
+    docker stop $(docker ps -a -q)
+    docker rm -f $(docker ps -a -q)
+    docker rmi -f $(docker images -q)
+    docker system prune -a --volumes  # 볼륨까지 삭제
+
+
+
+
+--------------------------------------------------------------
+[sm server 접속]
+---------------------------------------------------------------
+
 [jango install]
 sm@jango:~$ cd /usr/bin/
 sm@jango:/usr/bin$ sudo ln -s python3 python
@@ -30,3 +122,7 @@ PWD: qwer147852.
 
 ID: jeongdong
 PWD: qwer147852.
+
+
+
+

@@ -24,7 +24,6 @@ class MachineGroup(models.Model):
 
 from core.models import Company
 
-
 class Machine(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -74,8 +73,6 @@ class MachineInit(models.Model):
 
 
 from django.contrib.auth.models import Group, User
-
-
 class MachineOperator(models.Model):
     id = models.AutoField(primary_key=True)
 

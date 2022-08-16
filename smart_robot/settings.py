@@ -26,7 +26,7 @@ SECRET_KEY = 'django-insecure-28k&9#udd_enp=rd3nrd#m9liryv#rw7lv0*zuiqkq0rmt=gp!
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -34,9 +34,9 @@ ALLOWED_HOSTS = []
 INSTALLED_APPS = [
     'core',
     'machine',
-    'biz_master',
-    'bot_master',
-    'cam_master',
+    # 'biz_master',
+    # 'bot_master',
+    # 'cam_master',
     'code_master',
 
     'django.contrib.admin',
@@ -88,6 +88,15 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': BASE_DIR / 'db.sqlite3',
+        # 'ENGINE': 'django.db.backends.mysql',
+        # 'NAME': 'smartrobotdb',
+        # 'USER': 'hyunsaja',
+        # 'PASSWORD': 'smartrobot007',
+        # 'HOST': 'smart-robot-db.cm26scpyrenc.ap-northeast-2.rds.amazonaws.com',
+        # 'PORT': '3306',
+        # 'OPTIONS': {
+        #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
+        # }
     }
 }
 
@@ -127,10 +136,8 @@ USE_TZ = False
 # https://docs.djangoproject.com/en/4.1/howto/static-files/
 
 STATIC_URL = '/static/'
-# STATIC_ROOT = "D:\_Service\MyVenv\_FRAMEWORK_DJANGO_ADMIN\static2"
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR,  '_static')
-]
+STATIC_ROOT = os.path.join(BASE_DIR,  '_static')
+
 
 MEDIA_URL = '/media/'
 MEDIA_ROOT = os.path.join(BASE_DIR, '_media')

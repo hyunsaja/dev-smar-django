@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=1920, height=1080, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+
+    <style>
+        html, body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            overflow: hidden;
+        }
+    </style>
+    <script src="https://code.jquery.com/jquery-3.4.1.js"
+            integrity="sha256-WpOohJOqMqqyKL9FccASB9O0KwACQJpFTUBLTYOVvVU="
+            crossorigin="anonymous">
+    </script>
+</head>
+<body>
+    <form id="frm_excel" name="frm_excel" enctype="multipart/form-data" actition="" method="post">
+        {% csrf_token %}
+        <input type="file" name="file_excel" id="file_excel" accept=".xls,.xlsx" />
+
+        <input type="submit" value="제출" />
+
+    </form>
+</body>
+</html>

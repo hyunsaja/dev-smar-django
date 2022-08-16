@@ -17,27 +17,23 @@ from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework import status
 
-from code_master.models import FieldMaster
-from code_master.serializers import FieldMasterSerializer
+from markmachine.models import MijuMarkMachine
+from markmachine.serializers import MijuMarkMachineSerializer
 
 
-class RestApiFieldMaster(APIView):
-    '''
-    GET /RestApiFieldMaster
-    GET /RestApiFieldMaster/{id}
-    '''
+class RestApiMijuMarkMachine(APIView):
 
     def get(self, request, **kwargs):
         if self.kwargs.get('pk') is None:
-            queryset = FieldMaster.objects.all()  # .filter(status=5)   #ref code table
-            serializer = FieldMasterSerializer(queryset, many=True)
+            queryset = MijuMarkMachine.objects.all()
+            serializer = MijuMarkMachineSerializer(queryset, many=True)
             return Response(serializer.data, status=status.HTTP_200_OK)
         else:
             try:
-                queryset = FieldMaster.objects.get(id=self.kwargs.get('pk'))
-                # queryset = FieldMaster.objects.get(machine_id=self.kwargs.get('pk')).first()
+                queryset = MijuMarkMachine.objects.get(id=self.kwargs.get('pk'))
+                # queryset = AutoMarkMachine.objects.get(machine_id=self.kwargs.get('pk')).first()
                 print(queryset)
-                serializer = FieldMasterSerializer(queryset, many=True)
+                serializer = MijuMarkMachineSerializer(queryset, many=True)
                 return Response(serializer.data, status=status.HTTP_200_OK)
             except:
                 return HttpResponse(None)
