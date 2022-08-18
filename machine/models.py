@@ -85,7 +85,7 @@ class MachineOperator(models.Model):
     adate = models.DateTimeField(null=True)
 
     def __str__(self):
-        return self.description
+        return self.machine_id
 
     class Meta:
         # managed = False

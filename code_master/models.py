@@ -102,7 +102,7 @@ class AutoMarkMachine(models.Model):
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # 데이터 입력자
 
     def __str__(self):
-        return self.markdata
+        return self.ship_no
 
     class Meta:
         # managed = False
