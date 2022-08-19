@@ -1,9 +1,9 @@
-
 ---------------------------------------------------------------------------
 [ db 최초 빌드시 migrations 순서]
 ---------------------------------------------------------------------------
 1. settings의 모든 앱을 주석처리하고 migrate 한다.
     python manage.py migrate
+    project의 urls에서도 엡라우팅을 주석 처리한다
 2. core 앱의 user detail 부분을 models, admin 파일에서 주석처리하고 마이그레이션 실행
     python manage.py makemigrations
     python manage.py migrate
@@ -15,6 +15,32 @@
     상동
 6. python manage.py createsuperuser
 7. python manage.py runserver
+
+
+--------------------------------------------------------------------------------
+[유저 관리]
+--------------------------------------------------------------------------------
+0. code
+    업무부서 : 0 (기술부:1, 업업부:2, 관리부:3)
+1. 미주산업
+    회사 : miju / miju1234
+    유저 : miju_user_1 / miju1234
+    유저 : miju_user_2 / miju1234
+    앵글가공기 : miju_agcut_machine
+    꼬리표마킹기 : miju_mark_machine
+    로봇자동용접기 : miju_robot_weld_machine
+2. 이룸산업
+    회사 : irum / irum1234
+    유저 : irum_user_1 / iurm1234
+    유저 : irum_user_2 / irum1234
+    스텐션프레스 : irum_press_machine
+    꼬리표마킹기 : irum_mark_machine
+3. 정동중공업
+    회사 : jungdong / jungdong1234
+    유저 : jd_user_1 / jungdong1234
+    유저 : jd_user_2 / jungdong1234
+    로봇용접기 : jd_robot_weld_machine
+    꼬리표마킹기 : jd_mark_machine
 
 
 ----------------------------------------------------------------------------

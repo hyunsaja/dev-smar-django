@@ -192,6 +192,7 @@ class CompanyAdmin(admin.ModelAdmin):
 #=============================================================================================
 #=============================================================================================
 
+# '''
 
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User
@@ -225,3 +226,4 @@ class UserDetailAdmin(admin.ModelAdmin):
     list_display = ("user", "department", "phone",)
     search_fields = ("user", )
 
+# '''

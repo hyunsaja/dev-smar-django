@@ -52,14 +52,17 @@ class Company(models.Model):
         ordering = ["name", ]
 
 
+# ''' db 초기화시
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)
     company = models.OneToOneField(Company, on_delete=models.CASCADE)
-    department = models.IntegerField(choices=Code.objects.values_list('aint','avarchar').filter(gNumber=1).filter(aint__gt=0))
+    department = models.IntegerField(null=True, choices=Code.objects.values_list('aint','avarchar').filter(gNumber=1).filter(aint__gt=0))
     phone = models.CharField(max_length=100)
 
     class Meta:
         # managed = False
         db_table = "tb_UserDetail"
         verbose_name_plural = "3. UserDetail"
+
+# '''

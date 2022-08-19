@@ -101,6 +101,8 @@ class AutoMarkMachine(models.Model):
     updated_at = models.DateTimeField(auto_now=True)  # 수정일자
     author = models.ForeignKey(User, null=True, on_delete=models.SET_NULL)  # 데이터 입력자
 
+    mark_data = models.CharField(null=True, max_length=50)  # 실제 마킹데이터
+
     def __str__(self):
         return self.ship_no
 

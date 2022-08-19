@@ -52,18 +52,31 @@ class RobotCuttingMachineAdmin(admin.ModelAdmin):
 from code_master.models import AutoMarkMachine
 @admin.register(AutoMarkMachine)
 class MarkMachineAdmin(admin.ModelAdmin):
-    # list_display = ("markdata", "machine_id", "ship_no", "por_no", "seq_no", "block_no", "pcs_no", "paint_code",
-    #                 "lot_no", "work_quantity" "author")
+    list_display = ("paint_code", "ship_no", "por_no", "seq_no", "block_no", "pcs_no", "lot_no", "work_quantity", "worked_quantity")
 
     change_form_template = "admin/code_master/AutoMarkMachine/_change_form.html"
     change_list_template = "admin/code_master/AutoMarkMachine/_change_list.html"
 
+    def changelist_view(self, request, extra_context=None):
+        operatorA = MachineOperator.objects.filter(user_id=request.user)
+        machines = []
+        for machineA in operatorA:
+            machines.append(machineA.machine_id.id)
+        extra_machineKey = 'smart_robot_007'
+        extra_context = extra_context or {}
+        extra_context = {
+            'extra_Param': 1,
+            'extra_machines': list(Machine.objects.filter(id__in=machines)),
+            'extra_machineKey': extra_machineKey
+        }
+        # print(list(Machine.objects.filter(id__in = machines)))
+
+        shs = super(MarkMachineAdmin, self).changelist_view(
+            request, extra_context=extra_context)
+        return shs
 
     def get_queryset(self, request):
-        """
-        Return a QuerySet of all model instances that can be edited by the
-        admin site. This is used by changelist_view.
-        """
+
         qs = self.model._default_manager.get_queryset()
 
         #SHS

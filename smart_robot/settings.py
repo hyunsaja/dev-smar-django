@@ -92,7 +92,7 @@ DATABASES = {
         # 'NAME': 'smartrobotdb',
         # 'USER': 'hyunsaja',
         # 'PASSWORD': 'smartrobot007',
-        # 'HOST': 'smart-robot-db.cm26scpyrenc.ap-northeast-2.rds.amazonaws.com',
+        # 'HOST': 'smart-db.cm26scpyrenc.ap-northeast-2.rds.amazonaws.com',
         # 'PORT': '3306',
         # 'OPTIONS': {
         #     'init_command': "SET sql_mode='STRICT_TRANS_TABLES'"
