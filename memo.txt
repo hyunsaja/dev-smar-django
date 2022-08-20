@@ -24,8 +24,8 @@
     업무부서 : 0 (기술부:1, 업업부:2, 관리부:3)
 1. 미주산업
     회사 : miju / miju1234
-    유저 : miju_user_1 / miju1234
-    유저 : miju_user_2 / miju1234
+    유저 : miju_user_1 / miju1234 / 2
+    유저 : miju_user_2 / miju1234 / 4
     앵글가공기 : miju_agcut_machine
     꼬리표마킹기 : miju_mark_machine
     로봇자동용접기 : miju_robot_weld_machine
@@ -47,7 +47,7 @@
 [ec2 설정]
 ----------------------------------------------------------------------------
 
-[django_admin ec2 ip] : 43.200.163.232
+[django_admin ec2 ip] : 13.209.35.179
 
 1. 인스턴스 생성 : 보안그룹 - 인바운드 규칙 추가
 

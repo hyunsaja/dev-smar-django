@@ -63,27 +63,20 @@
 
 <!--  마이 컨텐츠   start-------------------------------------------------------->
 
-<!--<form id="frm_excel" name="frm_excel" enctype="multipart/form-data" actition="" method="post">-->
-<!--    {% csrf_token %}-->
-<!--    <input type="file" name="file_excel" id="file_excel" accept=".xls,.xlsx" />-->
-
-<!--    <input type="submit" value="제출" style="height:38px; vertical-aline:middle; margin: 0 auto;" />-->
-<!--</form>-->
-
 <form id="frm_excel" name="frm_excel" enctype="multipart/form-data" method="post">
     {% csrf_token %}
      {% if extra_Param == 1 %}
-    <label>
-        Select Machine: <select name="extra_machineID" required="">
-            <option value="" selected="">장비를 선택하세요! --------------</option>
-            {% for machine in extra_machines %}
-            <option value="{{machine.id}}">{{machine.company_id}}-{{machine.name}}</option>
-            {% endfor %}
-        </select>&nbsp&nbsp&nbsp&nbsp&nbsp
-    </label>
+        <label>
+            Select Machine: <select name="extra_machineID" required="">
+                <option value="" selected="">장비를 선택하세요! --------------</option>
+                {% for machine in extra_machines %}
+                <option value="{{machine.id}}">{{machine.company_id}}-{{machine.name}}</option>
+                {% endfor %}
+            </select>&nbsp&nbsp&nbsp&nbsp&nbsp
+        </label>
     {% endif %}
   <input type="file" id="file_excel" name="file_excel" accept=".xls,.xlsx" />
-  <input type="button" onclick="execl_upload();" value="업로드" />
+  <input type="button" onclick="execl_upload({{ mid }});" value="업로드" />
 </form>
 
 <script src="https://code.jquery.com/jquery-3.4.1.js"
@@ -93,7 +86,7 @@
 
 <script  type="text/javascript">
 //엑셀 업로드
-function execl_upload(){
+function execl_upload(mid){
     if(!$('#file_excel').val()){
         alert('엑셀 파일을 입력하세요');
     }else{
@@ -105,13 +98,8 @@ function execl_upload(){
                var form = $('#frm_excel')[0];
                var formData = new FormData(form);
 
-               // hyun ------------------------------------------ 애러남
-               //var value = {{ extra_machineKey }};
-               //var name = 'extra_machineKey';
-               //formData.append(name, value);
-               formData.append('project', '8138');
-               formData.append('por', 'L40');
-               formData.append('seq', '3');
+               // mid는 admin에서 넘어옴--------------------------------hyun
+               formData.append('extra_machineID', mid);
                // hyun ------------------------------------------------
 
                var params = "";
@@ -121,11 +109,12 @@ function execl_upload(){
                    enctype: 'multipart/form-data',
                    processData: false,
                    contentType: false,
-                   url: 'http://127.0.0.1:8000/code_master/mark_data_load/',
+                   url: 'http://127.0.0.1:8000/code_master/mark_excel_data/',
                    data: formData,
                    dataType: "JSON", // JSON 리턴
                    beforeSend: function () {
                        console.log('before');
+                       console.log(formData)
                    },
                    success: function (data) {
                        console.log('success');
@@ -144,9 +133,6 @@ function execl_upload(){
     }
 }
 </script>
-
-
-
 
 <!--  마이 컨텐츠   end---------------------------------------------------------->
 

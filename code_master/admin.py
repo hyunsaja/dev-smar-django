@@ -12,7 +12,6 @@ from code_master.models import RobotCuttingMachine
 @admin.register(RobotCuttingMachine)
 class RobotCuttingMachineAdmin(admin.ModelAdmin):
 
-
     change_form_template = "admin/code_master/RobotCuttingMachine/_change_form.html"
     change_list_template = "admin/code_master/RobotCuttingMachine/_change_list.html"
 
@@ -52,24 +51,31 @@ class RobotCuttingMachineAdmin(admin.ModelAdmin):
 from code_master.models import AutoMarkMachine
 @admin.register(AutoMarkMachine)
 class MarkMachineAdmin(admin.ModelAdmin):
-    list_display = ("paint_code", "ship_no", "por_no", "seq_no", "block_no", "pcs_no", "lot_no", "work_quantity", "worked_quantity")
+    list_display = ("mark_data",  "work_quantity", "worked_quantity", "work_select", "status", "updated_at")
 
     change_form_template = "admin/code_master/AutoMarkMachine/_change_form.html"
     change_list_template = "admin/code_master/AutoMarkMachine/_change_list.html"
 
     def changelist_view(self, request, extra_context=None):
+
+        if request.user.id == 2 or request.user == 4:
+            param = 2  # 1로 하면 수동 선택 ,2는 자동으로 머신id 넘김
+            mid =1     # 미주꼬리표마킹기 machine_id = 1
+        else:
+            param = 1
+            mid = 0
+
         operatorA = MachineOperator.objects.filter(user_id=request.user)
         machines = []
         for machineA in operatorA:
             machines.append(machineA.machine_id.id)
-        extra_machineKey = 'smart_robot_007'
-        extra_context = extra_context or {}
+        print(request.user)
+
         extra_context = {
-            'extra_Param': 1,
+            'extra_Param': param,
             'extra_machines': list(Machine.objects.filter(id__in=machines)),
-            'extra_machineKey': extra_machineKey
+            'mid' : mid
         }
-        # print(list(Machine.objects.filter(id__in = machines)))
 
         shs = super(MarkMachineAdmin, self).changelist_view(
             request, extra_context=extra_context)
@@ -83,11 +89,9 @@ class MarkMachineAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            #qs = qs.filter(author__user=request.user)
             qs = qs.filter(author=request.user)
             return qs
 
-    #get_form 또는 formfield_for_foreignkey 사용가능
     def get_form(self, request, obj=None, **kwargs):
         form = super(MarkMachineAdmin, self).get_form(request, obj, **kwargs)
         if request.user.is_superuser:

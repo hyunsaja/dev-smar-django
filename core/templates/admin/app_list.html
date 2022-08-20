@@ -4,7 +4,7 @@
 <!-- 사용자 정의 메뉴 추가 -->
 <div class="app-core module current-app">
   <table>
-    <caption>dashboard applist.html</caption>    
+    <caption>dashboard</caption>
     <tbody>
       <tr class="model-code">
         <th scope="row"><a href="/admin/" class="related-widget-wrapper-link"  aria-current="page">dashboard</a></th>
@@ -51,7 +51,8 @@
             {% endif %}
 
             {% if model.add_url %}
-              <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>
+<!--              <td><a href="{{ model.add_url }}" class="addlink">{% translate 'Add' %}</a></td>-->
+              <td></td>
             {% else %}
               <td></td>
             {% endif %}
@@ -60,7 +61,8 @@
               {% if model.view_only %}
                 <td><a href="{{ model.admin_url }}" class="viewlink">{% translate 'View' %}</a></td>
               {% else %}
-                <td><a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a></td>
+<!--                <td><a href="{{ model.admin_url }}" class="changelink">{% translate 'Change' %}</a></td>-->
+                <td></td>
               {% endif %}
             {% elif show_changelinks %}
               <td></td>

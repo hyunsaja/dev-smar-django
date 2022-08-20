@@ -15,6 +15,13 @@ from rest_framework import status
 from rest_framework.views import APIView
 from django.db.models import Q
 
+# ==============================================================================
+# 마킹 머신 공통 -----------------------------------------------------------------
+# ==============================================================================
+# 미주 마킹기 : 1
+# machine_id = 1  # 추후 자동으로 처리
+
+
 
 # ==============================================================================
 # mark_machine
@@ -50,38 +57,37 @@ class UploadExcelData(APIView):
                 if low_count == 0:
                     low_count = low_count + 1  # 제목행 pass
                     continue
-                tmp_dict = {}
+                td = {}
                 count = 0  # No 컬럼 건너뛰기
                 col_count = 0
                 #-------------------------------------
                 for cell in row:
-                    tmp_dict[key_list[count]] = cell.value
+                    td[key_list[count]] = cell.value
                     count = count + 1
                 # -------------------------------------
-                tmp_dict['author'] = author
-                tmp_dict['machine_id'] = machine_id
-                del tmp_dict['temp']  # No 항목 삭제
+                td['author'] = author
+                td['machine_id'] = machine_id
+                del td['temp']  # No 항목 삭제
 
-                data_list.append(tmp_dict)
-                print(data_list)
+                # 마크데이터 자동생성
+                if td['lot_no'] != None:
+                    td['mark_data'] = td['paint_code'] + ' ' + td['ship_no'] + ' ' + td['por_no'] + '-'\
+                                    + td['seq_no'] + ' ' + td['block_no'] + ' ' + td['pcs_no'] + ' ' + td['lot_no']
+                else:
+                    td['mark_data'] = td['paint_code'] + ' ' + td['ship_no'] + ' ' + td['por_no'] + '-'\
+                                    + td['seq_no'] + ' ' + td['block_no'] + ' ' + td['pcs_no']
 
+                data_list.append(td)
             wb.close()
 
             serializer = AutoMarkSerializer(data=data_list, many=True)
             if serializer.is_valid():
                 serializer.save()
-                return Response({'message': 'save_ok'})
+                return Response('Ok')
             else:
                 return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except:
-            return Response({'message': 'Error'})
-
-
-# ==============================================================================
-# 마킹 머신 공통 -----------------------------------------------------------------
-# ==============================================================================
-# 미주 마킹기 : 2
-machine_id = 2  # 추후 자동으로 처리
+            return Response('Error')
 
 
 # ==============================================================================
@@ -91,9 +97,9 @@ machine_id = 2  # 추후 자동으로 처리
 class MarkList(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            machine_id = request.data['extra_machineID']
-            MachineKey = request.data['extra_machineKey']
-            if MachineKey != 'smart_robot_007':
+            machine_id = request.data['machineID'] #codesys에 박아넣음
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart-robot-007':
                 return Response(status=status.HTTP_400_BAD_REQUEST)
             try:
                 mark_list = AutoMarkMachine.objects.filter(machine_id=machine_id,
@@ -123,7 +129,7 @@ class MarkList(APIView):
                 mark_dict = {}  # 비워주지 않으면 마지막 데이터로 리스트가 다 채워짐
             return Response(mark_list)
         except:
-            return Response({'massage': 'Error'})
+            return Response('Error')
 
 
 # ==============================================================================
@@ -133,9 +139,9 @@ class MarkList(APIView):
 class MarkGselect(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            machine_id = request.data['MachineID']
-            MachineKey = request.data['MachineKey']
-            if MachineKey != 'smart_robot_007':
+            machine_id = request.data['machineID']
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart_robot_007':
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             ship_no = request.data['project']
@@ -148,15 +154,14 @@ class MarkGselect(APIView):
                                                                 ship_no=ship_no,
                                                                 por_no=por_no,
                                                                 seq_no=seq_no)
-                select_fields.update(work_select=True) # 일괄수정
-                # select_fields.save() # 개별 수정시 적용
+                select_fields.update(work_select=True)
                 return Response('Ok')
 
             except AutoMarkMachine.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
 
         except:
-            return Response({'massage': 'Error'})
+            return Response('Error')
 
 
 # ==============================================================================
@@ -166,17 +171,16 @@ class MarkGselect(APIView):
 class MarkGcancle(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            machine_id = request.data['MachineID']
-            MachineKey = request.data['MachineKey']
-            if MachineKey != 'smart_robot_007':
+            machine_id = request.data['machineID']
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart_robot_007':
                 return Response(status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 select_fields = AutoMarkMachine.objects.filter(machine_id=machine_id,
                                                                 status=True,
-                                                               work_select=False)
-                select_fields.update(work_select=False) # 일괄수정
-                # select_fields.save() # 개별 수정시 적용
+                                                                work_select=False)
+                select_fields.update(work_select=False)
                 return Response('Ok')
 
             except AutoMarkMachine.DoesNotExist:
@@ -193,30 +197,22 @@ class MarkGcancle(APIView):
 class MarkDataLoad(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            # machine_id = request.data['MachineID']
-            # MachineKey = request.data['MachineKey']
-            # if MachineKey != 'smart_robot_007':
-            #     return Response(status=status.HTTP_400_BAD_REQUEST)
+            machine_id = request.data['machineID']
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart_robot_007':
+                return Response(status=status.HTTP_400_BAD_REQUEST)
 
             try:
                 markdatas = AutoMarkMachine.objects.filter(machine_id=machine_id,
                                                             status=False,
                                                             work_select=True)
-                print(markdatas)
                 mark_list = []
                 mark_dict = {}
                 for m in markdatas:
-                    if m.lot_no != None:
-                        mark_dict['markdata'] = m.paint_code + ' ' + m.ship_no + ' ' + m.por_no + '-' + m.seq_no + \
-                                ' ' + m.block_no + ' ' + m.pcs_no + ' ' + m.lot_no
-                    else:
-                        mark_dict['markdata'] = m.paint_code + ' ' + m.ship_no + ' ' + m.por_no + '-' + m.seq_no \
-                                                + ' ' + m.block_no + ' ' + m.pcs_no
                     mark_dict['work_quantity'] = m.work_quantity
                     mark_dict['worked_quantity'] = m.worked_quantity
+                    mark_dict['mark_data'] = m.mark_data
                     mark_list.append(mark_dict)
-                    m.mark_data = mark_dict['markdata']
-                    m.save()
                     mark_dict = {}
 
                 return Response(mark_list)
@@ -234,31 +230,28 @@ class MarkDataLoad(APIView):
 class MarkedData(APIView):
     def post(self, request, *args, **kwargs):
         try:
-            # machine_id = request.data['MachineID']
-            # MachineKey = request.data['MachineKey']
-            # if MachineKey != 'smart_robot_007':
-            #     return Response(status=status.HTTP_400_BAD_REQUEST)
+            machine_id = request.data['machineID']
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart_robot_007':
+                return Response(status=status.HTTP_400_BAD_REQUEST)
+
+            mark_data = request.data['mark_data']
 
             try:
                 markdatas = AutoMarkMachine.objects.filter(machine_id=machine_id,
                                                             status=False,
-                                                            work_select=True)
-                print(markdatas)
+                                                            work_select=True,
+                                                            mark_data=mark_data)
                 mark_list = []
                 mark_dict = {}
                 for m in markdatas:
-                    if m.lot_no != None:
-                        mark_dict['markdata'] = m.paint_code + ' ' + m.ship_no + ' ' + m.por_no + '-' + m.seq_no + \
-                                ' ' + m.block_no + ' ' + m.pcs_no + ' ' + m.lot_no
+                    if m.work_quantity > m.worked_quantity:
+                        m.worked_quantity = m.worked_quantity + 1
                     else:
-                        mark_dict['markdata'] = m.paint_code + ' ' + m.ship_no + ' ' + m.por_no + '-' + m.seq_no \
-                                                + ' ' + m.block_no + ' ' + m.pcs_no
-                    mark_dict['work_quantity'] = m.work_quantity
-                    mark_dict['worked_quantity'] = m.worked_quantity
-                    mark_list.append(mark_dict)
-                    mark_dict = {}
+                        m.status = True
+                    m.save()
 
-                return Response(mark_list)
+                return Response('Ok')
 
             except AutoMarkMachine.DoesNotExist:
                 return Response(status=status.HTTP_404_NOT_FOUND)
