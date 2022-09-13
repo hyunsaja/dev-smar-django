@@ -1,0 +1,12 @@
+Program File Format Version : 1.6  MechType: 714(HH7-02)  TotalAxis: 6  AuxAxis: 0
+S1   MOVE P,P[201],S=V![211]mm/s,A=1,T=0
+S2   MOVE L,P[202],S=V![211]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY V![217]
+S3   MOVE L,P[203],S=V![215]mm/s,A=1,T=0
+S4   MOVE L,P[204],S=V![212]mm/s,A=0,T=0
+     DO1=0
+     DELAY V![218]
+S5   MOVE L,P[205],S=V![211]mm/s,A=1,T=0
+     END

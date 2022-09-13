@@ -1,0 +1,104 @@
+<script src="/static/svg-include-EA.js"></script>
+<div id="myDIV">
+    <h1>app_DataList -  admin.py  - 51번줄 'extra_Param': 1 : excel upload</h1>
+    <h1>app_DataList -  admin.py  - 51번줄 'extra_Param': 2 : Equal Angle</h1>
+    <h1>app_DataList -  admin.py  - 51번줄 'extra_Param': 3 : Flat Bar</h1>
+    {{extra_Machine}}, {{extra_Param}}, {{extra_User}}<br />
+
+    {{extra_LastData.id}}, {{extra_LastData.ship_no}},{{extra_LastData.por_no}},
+    {{extra_LastData.seq_no}},{{extra_LastData.texture}},{{extra_LastData.material_spec_id}}<br />
+
+    <svg width="0" height="0" id="mySVG"
+         xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         style="background-color: #eeeeee">
+    </svg><br />
+
+    <input type="text" name="hoseon" id="hoseon" size=10 placeholder="호선" />
+    <input type="text" name="POR" id="POR" size=10 placeholder="POR" />
+    <input type="text" name="SEQ" id="SEQ" size=10 placeholder="SEQ" />
+    <input type="text" name="PCS" id="PCS" size=10 placeholder="piece" />
+    <input type="text" name="part" id="part" size=10 placeholder="part" />
+    <input type="text" name="leng" id="leng" size=10 value="500" placeholder="길이" onchange="myOnChangeLeng();" /><br />
+
+    <select name="ttexture" id="ttexture">
+        <option value="">재질 선택</option>
+        <option value="1">texture1</option>
+        <option value="2">texture2</option>
+        <option value="3">texture3</option>
+    </select>
+    <select name="ttype" id="ttype" onchange="myOnChangeType();">
+        <option value="">타입 선택</option>
+        <option value="EA">EA</option>
+        <option value="UA">UA</option>
+        <option value="EA">EA</option>
+    </select>
+    <select name="tstandard" id="tstandard" onchange="myOnChangeStandard();">
+        <option value="">규격 선택</option>
+        <option value="100*100*10T">100*100*10T</option>
+        <option value="100*80*13T">100*80*13T</option>
+        <option value="100*100*7T">100*100*7T</option>
+    </select>
+    <input type="text" name="dist" id="dist" placeholder="간격" /><br />
+
+    <select name="tmacro" id="tmacro" onchange="myOnChangeMacro();">
+        <option value="">매크로 선택</option>
+        <option value="EA001">EA001</option>
+        <option value="EA002">EA002</option>
+        <option value="EA003">EA003</option>
+        <option value="EA004">EA004</option>
+        <option value="EA005">EA005</option>
+
+        <option value="EA101">EA101</option>
+        <option value="EA102">EA102</option>
+        <option value="EA103">EA103</option>
+        <option value="EA104">EA104</option>
+
+
+        <option value="EA021">EA021</option>
+        <option value="EA022">EA022</option>
+        <option value="EA023">EA023</option>
+        <option value="EA024">EA024</option>
+        <option value="EA025">EA025</option>
+
+        <option value="EA121">EA121</option>
+        <option value="EA122">EA122</option>
+        <option value="EA123">EA123</option>
+        <option value="EA124">EA124</option>
+
+        <!-- distance -->
+
+        <option value="EA011">EA011</option>
+        <option value="EA111">EA111</option>
+
+        <option value="EA013">EA013</option>
+        <option value="EA014">EA014</option>
+        <option value="EA015">EA015</option>
+        <option value="EA016">EA016</option>
+
+        <option value="EA113">EA113</option>
+        <option value="EA114">EA114</option>
+        <option value="EA115">EA115</option>
+        <option value="EA116">EA116</option>
+
+        <option value="EA031">EA031</option>
+        <option value="EA032">EA032</option>
+        <option value="EA033">EA033</option>
+        <option value="EA034">EA034</option>
+
+        <option value="EA131">EA131</option>
+        <option value="EA132">EA132</option>
+        <option value="EA133">EA133</option>
+        <option value="EA134">EA134</option>
+
+
+    </select>
+    <input type="text" name="A" id="A" size=8 placeholder="param A" onchange="myOnChangeA();" />
+    <input type="text" name="B" id="B" size=8 placeholder="param B" onchange="myOnChangeB();" />
+    <input type="text" name="C" id="C" size=8 placeholder="param C" onchange="myOnChangeC();" />
+    <input type="text" name="D" id="D" size=8 placeholder="param D" onchange="myOnChangeD();" />
+    <input type="text" name="E" id="E" size=8 placeholder="param E" onchange="myOnChangeE();" /><br />
+    <button name="myDrawElement" id="myDrawElement" onclick="drawElement();">create</button>
+    <button name="myClear" id="myClear" onclick="myClearAll();">clear</button><br />
+</div>
+

@@ -27,6 +27,10 @@ SECRET_KEY = 'django-insecure-28k&9#udd_enp=rd3nrd#m9liryv#rw7lv0*zuiqkq0rmt=gp!
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+# CORS 관련 추가
+# CORS_ORIGIN_WHITELIST = ['http://127.0.0.1:3000' ,'https://localhost:3000']
+CORS_ORIGIN_ALLOW_ALL = True
+# CORS_ALLOW_CREDENTIALS = True
 
 
 # Application definition
@@ -39,6 +43,8 @@ INSTALLED_APPS = [
     # 'cam_master',
     'code_master',
 
+    'corsheaders',   # CORS 관련 추가
+
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -50,6 +56,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'corsheaders.middleware.CorsMiddleware',     # CORS 관련 추가
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

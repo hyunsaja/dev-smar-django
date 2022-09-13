@@ -1,0 +1,68 @@
+[   { 
+     "machine_id": "3",
+    "standard":"65*9T",
+    "texture":"SS400",
+    "ship_no": "1111",
+    "por_no": "0815",
+    "seq_no": "01",
+    "pcs_no": "PS001",
+    "part_no": "P001",
+
+    "length_dwg":"2000",
+    "length_cut":"2022",
+
+    "create_at":"2021-06-24 08:46:39",
+    "update_at":"2021-06-24 08:46:39",
+    "author":"4",
+
+    "work_quantity":"5",
+    "worked_quantity":"2",
+    "work_select":"True",
+    "status":"False"
+
+    "part_point":"5",
+
+    "cutlist":[
+        # {"CUT":["가공거리","매크로명","param1","param2","param3","param4","param5"]}, 
+        # 설명 : 파라메터는 FBP03만 해당됨 (param1 : 파이프구경, 나머지는 사용안함/0으로 채움)
+        {"CUT":["0","FBP01","0","0","0","0","0"]},
+        {"CUT":["500","FBP11","0","0","0","0","0"]},
+        {"CUT":["1000","FBP11","0","0","0","0","0"]},
+        {"CUT":["1500","FBP11","0","0","0","0","0"]},
+        {"CUT":["2000","FBP02","0","0","0","0","0"]},
+    },{ 
+        "machine_id": "3",
+       "standard":"65*16T",
+       "texture":"SS400",
+       "ship_no": "1111",
+       "por_no": "0815",
+       "seq_no": "01",
+       "pcs_no": "PS001",
+       "part_no": "P002",
+   
+       "length_dwg":"1300",
+       "length_cut":"1315",
+   
+       "create_at":"2021-06-24 08:46:39",
+       "update_at":"2021-06-24 08:46:39",
+       "author":"4",
+   
+       "work_quantity":"3",
+       "worked_quantity":"3",
+       "work_select":"True",
+       "status":"True",
+   
+       "part_point":"4",
+   
+       "cutlist":[
+           # {"CUT":["가공거리","매크로명","param1","param2","param3","param4","param5"]}, 
+           # 설명 : 파라메터는 FBP03만 해당됨 (param1 : 파이프구경, 나머지는 사용안함/0으로 채움)
+           {"CUT":["300","FBP13","0","0","0","0","0"]},
+           {"CUT":["500","FBP12","0","0","0","0","0"]},
+           {"CUT":["1000","FBP11","0","0","0","0","0"]},
+           {"CUT":["1300","FBP03","32A","0","0","0","0"]},
+       },{
+        ...
+       }
+]
+       

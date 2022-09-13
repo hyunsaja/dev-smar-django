@@ -1,0 +1,98 @@
+Program File Format Version : 1.6  MechType: 714(HH7-02)  TotalAxis: 6  AuxAxis: 0
+DIM lstart AS Integer
+DIM ls_BUF AS String
+_TEINPUT=10
+'-(4*6*10)
+'
+IF lstart<>1 THEN
+	'�̴��� ���� -----------
+	ENET1.IP="192.168.100.100"
+	ENET1.LPORT=8100
+	ENET1.RPORT=8100
+	ENET1.OPEN 1
+	CLR_RBUF ENET1
+	lstart=1
+	'JOB������ſ���
+	'PRINT ENET1,"REQUEST_JOB"
+ENDIF
+'
+'
+10   '*START_R
+'���������1
+INPUT ENET1,V40$
+PRINT #0,V40$
+'
+'����ؼ�1
+V41$=LEFT$(V40$,12)
+SELECT V41$
+	CASE "CONTINUE"
+		PRINT ENET1,"CONTINUE_OK"
+		'GOSUB *START_R
+		GOTO 10
+	CASE "CONNECTED"
+		'����Ȯ��
+		PRINT ENET1,"CONNECTED_OK"
+		'*START_REPEAT
+		GOTO 10
+	CASE "DISCONNECTED"
+		'��������
+		PRINT ENET1,"DISCONNECTED_OK"
+		ENET1.OPEN 0
+		lstart=0
+		END
+END_SELECT
+
+'JOB ó�� : ���� ~ �ݺ�
+V42$=MID$(V40$,14,7)
+V400%=VAL(V42$)
+V43$=MID$(V40$,23,7)
+V399%=VAL(V43$)
+'
+V320%=30
+FOR V310%=1 TO 12
+	V44$=MID$(V40$,V320%,8)
+	V![210+V310%]=VAL(V44$)
+	V320%=30+V310%*8
+NEXT
+PRINT ENET1,V40$
+'DELAY 0.02
+'
+LP[20]=(0,0,0,0,0,0,&H0081)
+FOR V330%=1 TO V399%
+	'���������2
+	INPUT ENET1,V50$,8,*NO_POSE
+	'����ؼ�2
+	LP[20].X=VAL(MID$(V50$,1,9))
+	LP[20].Y=VAL(MID$(V50$,10,9))
+	LP[20].Z=VAL(MID$(V50$,19,9))
+	LP[20].RX=VAL(MID$(V50$,28,9))
+	LP[20].RY=VAL(MID$(V50$,37,9))
+	LP[20].RZ=VAL(MID$(V50$,46,9))
+	LP[20].CFG=&H0609
+	P[200+V330%]=LP[20]
+	PRINT ENET1,V50$
+	'DELAY 0.02
+NEXT
+'
+'sub �κ��۾� ȣ��
+CALL V400%
+PRINT ENET1,"JOBRUNOK"
+'*START_REPEAT
+GOTO 10
+'
+'���� ó�� -----------
+'*NO_RESP
+'PRINT #0,"JOB ��û�� ���� ������ �����ϴ�."
+'
+'*INV_RES
+'PRINT #0,"��ȿ���� ���� JOB �����Դϴ�."
+'
+*NO_POSE
+PRINT #0,"��û�� ���� POSE ������ �����ϴ�."
+ENET1.OPEN 0
+lstart=0
+END
+'*ERR_RES
+'PRINT #0,"JOB ���� �����ڵ�=";V201%
+'*START_REPEAT
+GOTO 10

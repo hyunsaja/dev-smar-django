@@ -63,20 +63,25 @@
 
 <!--  마이 컨텐츠   start-------------------------------------------------------->
 
-<div name="aDisplayDiv" id="aDisplayDiv"> </div>
-<form id="thisFormID" data-method="post" data-enctype="multipart/form-data"
-      data-action="{% url 'ExcelUPload' %}"
-      data-innerhtml-id="aDisplayDiv" data-option="">
+<div name="agcutDisplayDiv" id="agcutDisplayDiv"> </div>
+<form id="agcutFormID" data-method="post" data-enctype="multipart/form-data"
+      data-action="{% url 'rpcagJsonUPload' %}"
+      data-innerhtml-id="agcutDisplayDiv" data-option="">
     {% csrf_token %}
-    <input type="file" id="file_excel" name="file_excel" accept=".xls,.xlsx" />
+    <input type="file" id="json_file" name="json_file" accept=".json" />
     <input type="hidden" name="extra_machineID" id="extra_machineID" value="{{ mid }}" />
     <input type="button" id="aSubmit" value="제출" />
+    {{ mid }}
 </form>
 
 <script>
+function editSVG(svgID){
+    alert(svgID);
+}
 
 // 브라우저 위에서 어디를 클릴하던지 이벤트 발생
 document.addEventListener('click', function (event) {
+
     if (event.target.id.toUpperCase().includes("submit".toUpperCase())){
 
         event.target.setAttribute("disabled", true);

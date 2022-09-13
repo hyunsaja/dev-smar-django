@@ -192,7 +192,7 @@ class CompanyAdmin(admin.ModelAdmin):
 #=============================================================================================
 #=============================================================================================
 
-# '''
+# ''' # 처음 세팅시
 
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.contrib.auth.models import User

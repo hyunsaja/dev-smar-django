@@ -29,8 +29,6 @@ class Code(models.Model):
         verbose_name_plural = "1. Code"
         ordering = ["-gNumber", "gSubNumber", "aNumber"]
 
-
-
 class Company(models.Model):
     id = models.AutoField(primary_key=True)
 
@@ -52,7 +50,7 @@ class Company(models.Model):
         ordering = ["name", ]
 
 
-# ''' db 초기화시
+# '''  # db 초기화시
 
 class UserDetail(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, primary_key=True)

@@ -1,0 +1,53 @@
+<script src="/static/code_master/svg-include-FB.js" defer></script>
+
+<div id="myDivFB">
+
+    <svg width="auto" height="65" id="mySVG" name="mySVG"
+         xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         style="background-color: #eeeeee">
+    </svg><br />
+    <input type="hidden" name="svg_data_id" id="svg_data_id" size=8 value="" /> <!--//사용하지 않으나 필요할수도-->
+
+    <select name="svg_standard" id="svg_standard" onchange="myOnChangeStandard();">
+        <option value="">규격 선택</option>
+        <option value="65*9T">65*9T</option>
+        <option value="65*16T">65*16T</option>
+    </select>&nbsp&nbsp
+    <input type="text" name="svg_leng" id="svg_leng" size=6 value="" placeholder="부재길이" onchange="myOnChangeLeng();" />&nbsp&nbsp
+    <input type="text" name="svg_submaterial" id="svg_submaterial" size=10 value="" placeholder="부제번호" />&nbsp&nbsp
+    <input type="text" name="svg_submaterial" id="svg_subquantity" size=4 value="" placeholder="수 량" />
+    ==>>
+    <input type="text" name="svg_dist" size=5 id="svg_dist" placeholder="가공위치" />&nbsp&nbsp
+    <select name="svg_macro" id="svg_macro" onchange="myOnChangeMacro();">&nbsp&nbsp
+        <option value="">매크로 선택</option>
+
+        <option value="FBP01">FBP01</option>
+        <option value="FBP02">FBP02</option>
+        <option value="FBP03">FBP03</option>
+        <option value="FBP04">FBP04</option>
+
+        <option value="FBP11">FBP11</option>
+        <option value="FBP12">FBP12</option>
+        <option value="FBP13">FBP13</option>
+    </select>
+    <input type="text" name="svg_A" id="svg_A" size=8 placeholder="param A" onchange="myOnChangeA();" />
+    <input type="hidden" name="svg_B" id="svg_B" size=8 placeholder="param A" onchange="myOnChangeB();" />
+    <input type="hidden" name="svg_c" id="svg_C" size=8 placeholder="param A" onchange="myOnChangeC();" />
+    <input type="hidden" name="svg_D" id="svg_D" size=8 placeholder="param A" onchange="myOnChangeD();" />
+    <input type="hidden" name="svg_E" id="svg_E" size=8 placeholder="param A" onchange="myOnChangeE();" />
+
+    ==>>
+    <!-- button tag 쓰면 Error -->
+    <input type="button" name="svg_myDrawElement" id="svg_myDrawElement" onclick="drawElement();" value="그리기" />&nbsp&nbsp
+    <input type="button" name="svg_myEditElement" id="svg_myEditElement" onclick="editElement();" value="수 정" />&nbsp&nbsp
+    <input type="button" name="svg_myDeleteElement" id="svg_myDeleteElement" onclick="deleteElement();" value="삭 제" />&nbsp&nbsp
+    <input type="button" name="svg_myClear" id="svg_myClear" onclick="myClearAll();" value="전체삭제" />&nbsp&nbsp
+    <input type="button" name="svg_mySaveJSON" id="svg_mySaveJSON" onclick="saveJSON();" value=" 저 장 " />
+
+    <input type="button" name="svg_myResetButton" id="svg_myResetButton" onclick="resetButton();" value="입력모드   " />&nbsp&nbsp
+<!--    <input type="button" name="svg_myAddJson" id="svg_myAddJson" onclick="myTestAddJson();" value="test(add json)" /><br />-->
+</div>
+
+
+ 

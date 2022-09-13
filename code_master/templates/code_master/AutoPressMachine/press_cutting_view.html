@@ -1,0 +1,45 @@
+<script src="/static/code_master/svg-include-FB.js" defer></script>
+<div id="myDivFB">
+
+    <svg width="1015" height="75" id="mySVG" name="mySVG"
+         xmlns="http://www.w3.org/2000/svg"
+         xmlns:xlink="http://www.w3.org/1999/xlink"
+         style="background-color: #eeeeee">
+    </svg><br />
+</div>
+
+<script>
+
+//  svg-include-FB.js에서 lastRun() 호출함
+
+function lastRun(){
+
+    if (!svg)
+        svg = document.getElementById("mySVG");
+
+    // 자재 길이 검출
+    var length = {{ length | safe }};
+    svgWidth = parseInt(length);
+
+    // 자재 높이 검출
+    var stan = "{{ standard | safe }}";
+    var Spec = stan.split("*");
+    svgHeight = parseInt(Spec[0]);
+
+    drawOutLineSW()
+
+    let presscutlist = {{ cutlist | safe }};
+
+    // 매크로 그림 그리기
+    presscutlist.forEach(clist => {
+
+        svg_dist = parseInt(clist["CUT"][0]);
+        svg_macro = clist["CUT"][1];
+        svg_param = parseInt(clist["CUT"][2]);
+
+        console.log(svg_dist, svg_macro, svg_param);
+
+        drawElementSW(svg_macro, svg_param, svg_dist)
+    });
+}
+</script>

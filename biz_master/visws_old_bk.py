@@ -82,6 +82,50 @@ def cutting_list(request, format=None):
             else:
                 return Response(fieldserializer.errors, status=status.HTTP_400_BAD_REQUEST)
         except:
+            return Response({'massage':'fieldcreate_Error'})
+        # 코드 마스터 등록
+        try:
+            codedata = []
+            for data in uploaddata:
+                code = {}
+                code['UserID'] = data['UserID']
+                # code['MachineID'] = data['MachineID']
+                code['Material'] = data['Material']
+
+                if CodeMaster.objects.filter(Material=code["Material"]).exists():
+                    continue
+
+                if code not in codedata:
+                    codedata.append(data)
+            codeserializer = CodeMasterSerializer(data=codedata, many=True)
+            if codeserializer.is_valid():
+                codeserializer.save()
+            else:
+                return Response(codeserializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
+            return Response({'massage':'codecreate_Error'})
+        # 비즈마스터 등록
+        try:
+            bizdata = []
+            for data in uploaddata:
+                bizcode = {}
+                bizcode['UserID'] = data['UserID']
+                # bizcode['MachineID'] = data['MachineID']
+                material = data['Material'].split('~')   #호선~블럭~피스
+                bizcode['Material'] = material[0] + '~' + material[1]
+
+                if BizMaster.objects.filter(Material=bizcode["Material"]).exists():
+                    continue
+
+                if bizcode not in bizdata:
+                    bizdata.append(bizcode)
+
+            bizcodes = BizCodeSerializer(data=bizdata, many=True)
+            if bizcodes.is_valid():
+                bizcodes.save()
+                return Response(bizcodes.data, status=status.HTTP_201_CREATED)
+            return Response(bizcodes.errors, status=status.HTTP_400_BAD_REQUEST)
+        except:
             return Response({'massage':'bizcreate_Error'})
 
     # 2. 블록 리스트 전체 보기 -----------------------------------------------------------
