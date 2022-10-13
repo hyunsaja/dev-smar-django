@@ -25,7 +25,7 @@ def hi5_send(R_CMD, R_VALUE, UserStr):
 
         bufsize = 1024
         udpserver_addr = ("192.168.100.100", 8100)
-        hi5_addr=('192.168.100.110', 8100)
+        hi5_addr=('192.168.100.11', 8100)
 
         # server
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     # TCP : socket.SOCK_STREAM
@@ -64,7 +64,7 @@ def hi5_send(R_CMD, R_VALUE, UserStr):
             # Velocity_buf = "00250.0 00022.0 00018.0 00018.0 00020.0 00018.0 00000.5 00000.5 00000.3 00000.1 00022.0 00018.0"
             # 속도값 Web DB에서 로드하기 ~ #7자리 .zfill(7)       
             header = {'Content-Type': 'application/json; charset=utf-8'}
-            posturl = 'http://smart-robot.kr/code_master/rpcag_speed_spec/'
+            posturl = 'http://smart-robot.kr/biz_master/speed_list/'
             data = { "UserID": UserID, "MachineID": MachineID, "MachineKey": MachineKey, "cmd": "RD_velocity", "worksize": worksize, "texture": texture }
             msg = requests.post(posturl, headers=header, data=json.dumps(data), timeout = 50).text
             # -----------
@@ -77,7 +77,7 @@ def hi5_send(R_CMD, R_VALUE, UserStr):
             #===================================================================
             #dataArr = mdlPosAngleEA.func_ang_pose(R_VALUE)     # JOB 생성 <~ DLL_VAL    # ~> To Web
             # Web 함수에서 내용 받기 ~ #8자리
-            posturl = 'http://smart-robot.kr/code_master/mdlPosAngle/'
+            posturl = 'http://smart-robot.kr/biz_master/macro_list/'
             data = { "UserID": UserID, "MachineID": MachineID, "MachineKey": MachineKey, "cmd": "FN_mdlPos", "sizekind": sizekind, "r_value": R_VALUE, "edgeadd": edgeadd }
             msg = requests.post(posturl, headers=header, data=json.dumps(data), timeout = 50).text
             # -----------

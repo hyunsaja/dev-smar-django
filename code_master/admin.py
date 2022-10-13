@@ -4,6 +4,7 @@ from django.contrib import admin
 # 공통 =======================================================================================
 from django.contrib.auth.models import User
 from machine.models import Machine
+from core.models import UserDetail
 from machine.models import MachineOperator
 
 #===============================================================================
@@ -15,12 +16,12 @@ from code_master.models import AutoMarkMachine
 class MarkMachineAdmin(admin.ModelAdmin):
     list_display = ("mark_data",  "work_quantity", "worked_quantity", "work_select", "status", "updated_at")
 
-    change_form_template = "admin/code_master/AutoMarkMachine/_change_form.html"
+    # change_form_template = "admin/code_master/AutoMarkMachine/_change_form.html"
     change_list_template = "admin/code_master/AutoMarkMachine/_change_list.html"
 
     def changelist_view(self, request, extra_context=None):
 
-        if request.user.id == 2 or request.user == 3:
+        if request.user.id == 2 or request.user.id == 3:
             param = 2  # 1로 하면 수동 선택 ,2는 자동으로 머신id 넘김
             mid =1     # 미주꼬리표마킹기 machine_id = 1
         else:
@@ -51,7 +52,11 @@ class MarkMachineAdmin(admin.ModelAdmin):
         if request.user.is_superuser:
             return qs
         else:
-            qs = qs.filter(author=request.user)
+            #qs = qs.filter(author__user=request.user)
+            userComp = UserDetail.objects.get(user=request.user)
+            userDetailIDs = UserDetail.objects.filter(company=userComp.company).values_list('user')
+            qs = qs.filter(author__in=userDetailIDs)
+            # qs = qs.filter(author=request.user)
             return qs
 
     def get_form(self, request, obj=None, **kwargs):
@@ -60,14 +65,9 @@ class MarkMachineAdmin(admin.ModelAdmin):
             return form
         else:
             form.base_fields['author'].queryset = User.objects.filter(id=request.user.id)
+            # 미주 마크머신 id = 1
+            form.base_fields['machine_id'].queryset = Machine.objects.filter(id = 1)
 
-            operatorA = MachineOperator.objects.filter(user_id=request.user)
-
-            machines = []
-            for machineA in operatorA:
-                machines.append(machineA.machine_id.id)
-
-            form.base_fields['machine_id'].queryset = Machine.objects.filter(id__in = machines)
             return form
 
 
@@ -81,7 +81,7 @@ from code_master.models import AutoPressMachine
 class AutoPressMachineAdmin(admin.ModelAdmin):
     list_display = ("view_data",  "show_firm_url", "work_quantity", "worked_quantity", "work_select", "status", "updated_at")
 
-    change_form_template = "admin/code_master/AutoPressMachine/_change_form.html"
+    # change_form_template = "admin/code_master/AutoPressMachine/_change_form.html"
     change_list_template = "admin/code_master/AutoPressMachine/_change_list.html"
 
 
@@ -93,7 +93,7 @@ class AutoPressMachineAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
 
-        if request.user.id == 4 or request.user == 5:
+        if request.user.id == 4 or request.user.id == 5:
             param = 2  # 1로 하면 수동 선택 ,2는 자동으로 머신id 넘김
             mid =3     # 미주꼬리표마킹기 machine_id = 1
         else:
@@ -129,7 +129,10 @@ class AutoPressMachineAdmin(admin.ModelAdmin):
             return qs
         else:
             #qs = qs.filter(author__user=request.user)
-            qs = qs.filter(author=request.user)
+            userComp = UserDetail.objects.get(user=request.user)
+            userDetailIDs = UserDetail.objects.filter(company=userComp.company).values_list('user')
+            qs = qs.filter(author__in=userDetailIDs)
+            # qs = qs.filter(author=request.user)
             return qs
 
     #get_form 또는 formfield_for_foreignkey 사용가능
@@ -140,13 +143,17 @@ class AutoPressMachineAdmin(admin.ModelAdmin):
         else:
             form.base_fields['author'].queryset = User.objects.filter(id=request.user.id)
 
-            operatorA = MachineOperator.objects.filter(user_id=request.user)
+            # operatorA = MachineOperator.objects.filter(user_id=request.user)
+            #
+            # machines = []
+            # for machineA in operatorA:
+            #     machines.append(machineA.machine_id.id)
+            #
+            # form.base_fields['machine_id'].queryset = Machine.objects.filter(id__in = machines)
 
-            machines = []
-            for machineA in operatorA:
-                machines.append(machineA.machine_id.id)
+            # 이룸 자동프레스 id = 3
+            form.base_fields['machine_id'].queryset = Machine.objects.filter(id = 3)
 
-            form.base_fields['machine_id'].queryset = Machine.objects.filter(id__in = machines)
             return form
 
 
@@ -160,7 +167,7 @@ from code_master.models import RpcagMachine
 class RpcagMachineAdmin(admin.ModelAdmin):
     list_display = ("view_data",  "show_firm_url", "work_quantity", "worked_quantity", "work_select", "status", "updated_at")
 
-    change_form_template = "admin/code_master/RobotAgCuttingMachine/_change_form.html"
+    # change_form_template = "admin/code_master/RobotAgCuttingMachine/_change_form.html"
     change_list_template = "admin/code_master/RobotAgCuttingMachine/_change_list.html"
 
 
@@ -172,7 +179,7 @@ class RpcagMachineAdmin(admin.ModelAdmin):
 
     def changelist_view(self, request, extra_context=None):
 
-        if request.user.id == 2 or request.user == 3:
+        if request.user.id == 2 or request.user.id == 3:
             param = 2  # 1로 하면 수동 선택 ,2는 자동으로 머신id 넘김
             mid = 2     # 미주꼬리표마킹기 machine_id = 1
         else:
@@ -209,7 +216,10 @@ class RpcagMachineAdmin(admin.ModelAdmin):
             return qs
         else:
             #qs = qs.filter(author__user=request.user)
-            qs = qs.filter(author=request.user)
+            userComp = UserDetail.objects.get(user=request.user)
+            userDetailIDs = UserDetail.objects.filter(company=userComp.company).values_list('user')
+            qs = qs.filter(author__in=userDetailIDs)
+            # qs = qs.filter(author=request.user)
             return qs
 
     #get_form 또는 formfield_for_foreignkey 사용가능

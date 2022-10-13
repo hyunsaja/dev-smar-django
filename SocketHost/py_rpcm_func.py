@@ -4,7 +4,7 @@ import json
 
 # 함수 구분 호출
 def rpcm_Func(f_cmd, f_val):
-    if f_cmd == "CalcRealLenth":
+    if f_cmd == "CALCREALLENTH":
         return CalcRealLenth(f_val)     # 리턴 : OK,로봇가공거리,콘베어이동거리,배출핸드Blank영역
     else:
         return 'NG,error cmd none'
@@ -13,35 +13,46 @@ def rpcm_Func(f_cmd, f_val):
 # =================================================================================
 # =================================================================================
 
-GworkPoint = 0
+# GworkPoint = 0
 # RBeforeCode = f_WorkProcess.dgvWorkNow.Rows[GworkRow].Cells[GworkPoint + 14 - 1].Value.ToString().Substring(1, 2)
 # RAfterCode = f_WorkProcess.dgvWorkNow.Rows[GworkRow].Cells[GworkPoint + 14 + 1].Value.ToString().Substring(1, 2)
-
+# RLenCode, RBeforeCode, RAfterCode,GA_LenthCalc  //
 
 # EA 50*50*6T$294,EA015,90,43,0,0,12
 # GRobotLen 계산 : 실제 로봇 가공 거리(Z축 값) <~~ 가공 원점에서 시작 되도록...
-def CalcRealLenth(F_Val):        # RLenCode, RBeforeCode, RAfterCode        GA_LenthCalc      GVCutTAdj, GVCutGapAdj, PIPESTART, GTubeMargin
+def CalcRealLenth(F_Val):        # GVCutTAdj, GVCutGapAdj, PIPESTART, GTubeMargin
 
-        
     try:
 
         # 전달 변수
         # ===========================================================================
-
-        val_buf = F_Val.splite('$')
+        
+        val_buf = F_Val.split('$')
         sizekind = val_buf[0][0:2]     # 자재 구분 : EA UA CH IB HB PI SP
 
         if sizekind == 'EA' or sizekind == 'SP':
-            Size_buf = val_buf[1][3:]               # 'EA ', 'UA ' 제거
+            Size_buf = val_buf[0][3:]               # 'EA ', 'UA ' 제거
             Size_buf = Size_buf.split('*')
             Work_S = float(Size_buf[0])
             Work_L = float(Size_buf[1])
             Work_T1 = float(Size_buf[2].replace('T',''))
             Work_T2 = Work_T1
-        else:
-            return 'Error'
+        elif sizekind == 'PI':
+            Size_buf = val_buf[0].split(' ')
+            Size_buf2 = Size_buf[1].split('-')    
+            Work_S = float(Size_buf2[1])            # <~ WORK_R
+            Size_buf2 = Size_buf[2].split('-')
+            Work_T1 = float(Size_buf2[1].replace('T',''))
+        else:       # UA CH IB HB
+            Size_buf = val_buf[0][3:]
+            Size_buf2 = Size_buf.split('/')
+            Size_buf = Size_buf2[0].split('*')
+            Work_S = float(Size_buf[0])
+            Work_L = float(Size_buf[1])
+            Work_T1 = float(Size_buf[2])
+            Work_T2 = float(Size_buf2[1].replace('T',''))
 
-        Work_Code = str(val_buf[2]).split(',')         # ~> ["294","EA015","90","43","0","0","12"]    
+        Work_Code = str(val_buf[1]).split(',')         # ~> ["294","EA015","90","43","0","0","12"]    
         c_code = int(Work_Code[1][2:])                 # 자재 구분 제거 한 두자리 코드 <~ 가공코드(Work_Code[1] = RLenCode)
 
         Cons_a = float(Work_Code[2])
@@ -56,13 +67,13 @@ def CalcRealLenth(F_Val):        # RLenCode, RBeforeCode, RAfterCode        GA_L
         else:
             LenAdd = 0
 
-        GVCutTAdj = float(val_buf[3])     #1
-        GVCutGapAdj = float(val_buf[4])     #0
+        GVCutTAdj = float(val_buf[2])     #1
+        GVCutGapAdj = float(val_buf[3])     #0
 
-        PIPESTART = int(val_buf[5])     #100
-        GTubeMargin = int(val_buf[6])     #10
+        PIPESTART = int(val_buf[4])     #100
+        GTubeMargin = int(val_buf[5])     #10
 
-        # GDblJobExecCode = int(val_buf[7])     #0      # 비사용
+        # GDblJobExecCode = int(val_buf[6])     #0      # 비사용
 
         # ===========================================================================
         GCutLoss = 3
@@ -387,11 +398,11 @@ def CalcRealLenth(F_Val):        # RLenCode, RBeforeCode, RAfterCode        GA_L
 
         # 결과값 ~ 소수점 3자리로 정리
         # 로봇 이동 거리 
-        GRobotLen = round(float(GRobotLen), 3)
+        GRobotLen = str(round(float(GRobotLen), 3))
         # 콘베어 이동 거리(값) 및 그리퍼 blank 값 계산
-        GConvDist = round(float(CalcConvLen), 3)
+        GConvDist = str(round(float(CalcConvLen), 3))
         # 배출 핸드 ~ 가공으로 인해 잡히는 부분이 없는 구간(좌측 가공 및 V,ㄷ 컷팅)
-        GBlankArea = round(float(GBlankArea), 3)
+        GBlankArea = str(round(float(GBlankArea), 3))
         
         return 'OK,' + GRobotLen + ',' + GConvDist + ',' + GBlankArea      # 'OK,로봇가공거리,콘베어이동거리, 배출핸드Blank영역'
 
@@ -399,7 +410,7 @@ def CalcRealLenth(F_Val):        # RLenCode, RBeforeCode, RAfterCode        GA_L
 
     except:
         # print("error occured")       # 에러 메시지
-        return 'NG,error occured,0,0'
+        return 'NG,error occured,0,0,0'
 
 
 
@@ -414,5 +425,10 @@ def CalcRealLenth(F_Val):        # RLenCode, RBeforeCode, RAfterCode        GA_L
 
 # # 좌표 계산 하기 함수 ~> Web 함수 (이동)
 # def CalcNewStan(Sel_Calc, T_Origin, GWorkPosition, size_code):
+
+
+# data='C_FUNC#CALCREALLENTH#EA 50*50*6T$294,EA015,90,43,0,0,12$1$0$100$10'
+# recvstr = data.split('#')
+# print(rpcm_Func(recvstr[1], recvstr[2]))
 
 

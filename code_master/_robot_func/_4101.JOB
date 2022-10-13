@@ -1,3 +1,0 @@
-Program File Format Version : 1.6  MechType: 714(HH7-02)  TotalAxis: 6  AuxAxis: 0
-S1   MOVE P,P[201],S=V![211]mm/s,A=1,T=0
-     END

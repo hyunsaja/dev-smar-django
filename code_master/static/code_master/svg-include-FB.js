@@ -203,7 +203,7 @@ function drawOutLineSW() {
 
     rect.setAttribute("width", svgWidth);
     rect.setAttribute("height", svgHeight);
-    rect.setAttribute("style", "stroke-width:3px; stroke:#775577; fill:none");
+    rect.setAttribute("style", "stroke-width:3px; stroke:#333333; fill:none");
     svg.appendChild(rect);
 }
 
@@ -211,11 +211,6 @@ function drawOutLineSW() {
 //=========================================
 
 
-//사용지하 않음
-function myOnChangeMacro() {
-}
-function myOnChangeA() {
-}
 
 //커팅그림 그리기 버튼 클릭
 function drawElement() {
@@ -302,7 +297,7 @@ function drawFBP01(macro, A, dist) {
     sH = 43;
 
     path = document.createElementNS(svgNS, "path");
-    path = makeID8Event(path, macro, A, dist);
+    //path = makeID8Event(path, macro, A, dist);
     pathValueA = "M " + (w - nW) + " " + 0
         + " L " + w + " " + parseInt((h - sH) / 2)
         + " L " + w + " " + parseInt(h - (h - sH) / 2)
@@ -314,6 +309,8 @@ function drawFBP01(macro, A, dist) {
     );
     path.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(path);
+
+    drawText(10, parseInt(h / 2)+8, dist);
 
 
 }
@@ -327,7 +324,7 @@ function drawFBP02(macro, A, dist) {
     sH = 43;
 
     path = document.createElementNS(svgNS, "path");
-    path = makeID8Event(path, macro, A, dist);
+    //path = makeID8Event(path, macro, A, dist);
     pathValueA = "M " + nW + " " + 0
         + " L " + 0 + " " + parseInt((h - sH) / 2)
         + " L " + 0 + " " + parseInt(h - (h - sH) / 2)
@@ -339,6 +336,8 @@ function drawFBP02(macro, A, dist) {
     );
     path.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(path);
+
+    drawText(10, parseInt(h / 2)+8, dist);
 }
 function drawFBP03(macro, A, dist) {
     //svgHeightTop, svgHeightBottom, svgThickness
@@ -354,7 +353,7 @@ function drawFBP03(macro, A, dist) {
     }
 
     path = document.createElementNS(svgNS, "path");
-    path = makeID8Event(path, macro, A, dist);
+    //path = makeID8Event(path, macro, A, dist);
     pathValueA = "M " + (nW) + " " + 0
         + " L " + 0 + " " + parseInt((h - A) / 2)
 
@@ -376,6 +375,8 @@ function drawFBP03(macro, A, dist) {
     );
     path.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(path);
+
+    drawText(10, parseInt(h / 2), dist);
 }
 function drawFBP04(macro, A, dist) {
     //svgHeightTop, svgHeightBottom, svgThickness
@@ -386,7 +387,7 @@ function drawFBP04(macro, A, dist) {
     r = parseInt(svgHeight / 2)
 
     path = document.createElementNS(svgNS, "path");
-    path = makeID8Event(path, macro, A, dist);
+    //path = makeID8Event(path, macro, A, dist);
     pathValueA = "M " + r + " " + 0
 
         ////arch
@@ -405,6 +406,8 @@ function drawFBP04(macro, A, dist) {
     );
     path.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(path);
+
+    drawText(10, parseInt(h / 2)+8, dist);
 }
 function drawFBP11(macro, A, dist) {
     //svgHeightTop, svgHeightBottom, svgThickness
@@ -422,7 +425,7 @@ function drawFBP11(macro, A, dist) {
     }
 
     path = document.createElementNS(svgNS, "path");
-    path = makeID8Event(path, macro, A, dist);
+    //path = makeID8Event(path, macro, A, dist);
     pathValueA = "M " + (dist) + " " + parseInt((h / 2) - tanB)
         + " L " + (dist + tanB) + " " + parseInt((h / 2))
         + " L " + (dist) + " " + parseInt((h / 2) + tanB)
@@ -435,6 +438,8 @@ function drawFBP11(macro, A, dist) {
     );
     path.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(path);
+
+    drawText(dist+10, parseInt(h / 2)+8, dist);
 }
 function drawFBP12(macro, A, dist) {
     //svgHeightTop, svgHeightBottom, svgThickness
@@ -450,12 +455,14 @@ function drawFBP12(macro, A, dist) {
     }
 
     circle = document.createElementNS(svgNS, "circle");
-    circle = makeID8Event(circle, macro, A, dist);
+    //circle = makeID8Event(circle, macro, A, dist);
     circle.setAttribute("cx", dist);
     circle.setAttribute("cy", parseInt(h / 2));
     circle.setAttribute("r", parseInt(r));//지름
     circle.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(circle);
+
+    drawText(dist+10, parseInt(h / 2)+6, dist);
 }
 function drawFBP13(macro, A, dist) {
     //svgHeightTop, svgHeightBottom, svgThickness
@@ -471,14 +478,31 @@ function drawFBP13(macro, A, dist) {
     }
 
     circle = document.createElementNS(svgNS, "circle");
-    circle = makeID8Event(circle, macro, A, dist);
+    //circle = makeID8Event(circle, macro, A, dist);
     circle.setAttribute("cx", dist);
     circle.setAttribute("cy", parseInt(h / 2));
     circle.setAttribute("r", parseInt(r));//지름
     circle.setAttribute("style", "fill:none; stroke:#3355ff; stroke-width:3;");
     svg.appendChild(circle);
+
+    drawText(dist+10, parseInt(h / 2)+6, dist);
 }
 
+function drawText(x, y, string){
+
+    if (x <= 0) {
+        alert("표출할 좌표를 입력하세요.");
+        return;
+    }
+
+    text = document.createElementNS(svgNS, "text");
+    text.setAttribute("x", x);
+    text.setAttribute("y", y);
+    text.setAttribute("fill", "#000000");
+    text.textContent = string;
+    text.innerText = string;
+    svg.appendChild(text);
+}
 //=========================================
 function saveJSON() {
     var svg = document.getElementById("mySVG");
@@ -525,7 +549,7 @@ function saveJSON() {
 
 function drawElementFromJSON() {
     //https://java119.tistory.com/54
-
+    console.log('aaa')
     //get dome infor
     if (!svg)
         svg = document.getElementById("mySVG");
@@ -605,7 +629,8 @@ function myTestAddJson() {
 
 document.addEventListener("DOMContentLoaded", function () {
     if(document.getElementById("id_standard"))
-        drawElementFromJSON();
+        //drawElementFromJSON();
+        lastRun();
     else
         lastRun();
 });

@@ -19,6 +19,7 @@ urlpatterns = [
     path('press_allcancle/', views.PressGcancle.as_view()),
     path('press_worked_data/', views.PressWorkedData.as_view()),
     path('press_part_data_load/', views.PressPartDataLoad.as_view()),
+    path('press_part_data_optimize/', views.PressPartDataOptimize.as_view()),
     path('press_cut_data_load/', views.PressCutDataLoad.as_view()),
 
     path('rpcag_cutting_view/', views.RpcagCuttingView.as_view()),
@@ -33,6 +34,9 @@ urlpatterns = [
     path('rpcag_cut_data_load/', views.RpcagCutDataLoad.as_view()),
     path('rpcag_material_spec/', views.RpcagMaterialSpec.as_view()),
     path('rpcag_speed_spec/', views.RpcagSpeedSpec.as_view()),
+    path('rpcag_camshot/', views.RpcagCamshot.as_view()),
+
+    path('rpcm_camshot/', views.RpcmCamshot.as_view()),
 
 ]
 # urlpatterns = format_suffix_patterns(urlpatterns)

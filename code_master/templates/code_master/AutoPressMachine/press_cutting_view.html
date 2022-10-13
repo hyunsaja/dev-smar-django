@@ -1,4 +1,7 @@
-<script src="/static/code_master/svg-include-FB.js" defer></script>
+<!DOCTYPE html>
+{% load static %}
+<html lang="ko">
+<script src="{% static 'code_master/svg-include-FB.js' %}" defer></script>
 <div id="myDivFB">
 
     <svg width="1015" height="75" id="mySVG" name="mySVG"
@@ -42,4 +45,8 @@ function lastRun(){
         drawElementSW(svg_macro, svg_param, svg_dist)
     });
 }
+
+
+
 </script>
+</html>

@@ -223,7 +223,7 @@ admin.site.register(User, UserAdmin)
 from core.models import UserDetail
 @admin.register(UserDetail)
 class UserDetailAdmin(admin.ModelAdmin):
-    list_display = ("user", "department", "phone",)
+    list_display = ("user", "company", "department", "phone",)
     search_fields = ("user", )
 
 # '''

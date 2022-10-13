@@ -40,10 +40,11 @@ INSTALLED_APPS = [
     'machine',
     # 'biz_master',
     # 'bot_master',
-    # 'cam_master',
+    'cam_master',
     'code_master',
 
     'corsheaders',   # CORS 관련 추가
+    'storages',      # S3 관련
 
     'django.contrib.admin',
     'django.contrib.auth',
@@ -147,7 +148,18 @@ STATIC_ROOT = os.path.join(BASE_DIR,  '_static')
 
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
+# MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
+AWS_ACCESS_KEY_ID = 'AKIAVFAH4YUXSUJU3P4B'
+AWS_SECRET_ACCESS_KEY = '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'
+AWS_REGION = 'ap-northeast-2'
+###S3 Storages
+AWS_STORAGE_BUCKET_NAME = 'smart-robot-media'   # S3 버킷 이름
+AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_REGION)
+AWS_S3_OBJECT_PARAMETERS = {
+    'CacheControl': 'max-age=86400',
+}
+DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/4.1/ref/settings/#default-auto-field

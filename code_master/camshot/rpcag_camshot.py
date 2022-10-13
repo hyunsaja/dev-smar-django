@@ -1,7 +1,6 @@
 import numpy as np
 import cv2
-from .models import PlateChamferMachine, RpcmS300Machine, RpcmAgcutMachine
-from .models import CoamingMachine, MijuRobotWeldingMachine
+from .models import CamMaster
 from django.core.files import File
 from django.core.files.base import ContentFile
 

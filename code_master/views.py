@@ -889,6 +889,27 @@ class RpcagSpeedSpec(APIView):
             return Response(Error)
 
 
+# ==============================================================================
+# rpcag_camshot --- 앵글가공기 비젼
+# ==============================================================================
+
+class RpcagCamshot(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            origin_image = request.FILES['image']
+            m_data = request.data['m_data']
+            MachineKey = request.data['machineKey']
+            if MachineKey != 'smart-robot-007':
+                return Response('Error')
+            req_data = 'OK,' + m_data
+            # data_list = m_data.split(',')
+            # data_list.insert(0, 'OK')
+            return Response(req_data)
+
+        except:
+            return Response('Error')
+
+
 
 
 # ==============================================================================
@@ -993,11 +1014,11 @@ class UploadPressExcelData(APIView):
                     td['length_cut'] = int(td['length_dwg']) + 15
                 elif macroName == 'FBP03':
                     if cutParam == '22':
-                        td['length_cut'] = int(td['length_dwg']) + 14
+                        td['length_cut'] = int(td['length_dwg']) + 15
                     elif cutParam == '25A':
-                        td['length_cut'] = int(td['length_dwg']) + 9
-                    elif cutParam == '35A':
-                        td['length_cut'] = int(td['length_dwg']) + 4
+                        td['length_cut'] = int(td['length_dwg']) + 10
+                    elif cutParam == '32A':
+                        td['length_cut'] = int(td['length_dwg']) + 5
                 elif macroName == 'FBP04':
                     td['length_cut'] = int(td['length_dwg']) + 52
                 else:
@@ -1045,7 +1066,7 @@ class PressWorkDataLoad(APIView):
             try:
                 work_list = AutoPressMachine.objects.filter(machine_id=machine_id,
                                                             status=False,
-                                                            standard=standard)[:100]
+                                                            standard=standard)[:20]
             except AutoPressMachine.DoesNotExist:
                 return Response(Error)
                 # return Response(status=status.HTTP_404_NOT_FOUND)
@@ -1058,6 +1079,7 @@ class PressWorkDataLoad(APIView):
                 m_dict['count'] = str(count)
                 m_dict['view_data'] = obj.view_data
                 m_dict['work_quantity'] = str(obj.work_quantity)
+                m_dict['worked_quantity'] = str(obj.worked_quantity)
                 if obj.work_select == True:
                     select = 'o'
                 else:
@@ -1086,7 +1108,7 @@ class PressPartDataLoad(APIView):
 
             standard = request.data['standard']
             inputlength = int(request.data['inputlength'])
-            if inputlength < 6000:
+            if inputlength < 1300:
                 return Response(Error)
 
             # ---------------------------------------------------------------
@@ -1094,52 +1116,56 @@ class PressPartDataLoad(APIView):
                 partdatas = AutoPressMachine.objects.filter(machine_id=machine_id,
                                                                 status=False,
                                                                 work_select=True,
-                                                                standard=standard)[:100]
+                                                                standard=standard)
             except AutoPressMachine.DoesNotExist:
                 return Response(Error)
 
             # 먼저 해당 부재의 수량 만큼 배열로 정렬한다.
-            list = []
             partdict = {}
+            totallen = 0  # 가공부재 길이
+            difflen =0  # 투입부재 잔량
+            endminlen = 700  # 마지막 부재의 최소길이
+            endok = False  # 마지막 부재 있을때 True
+            endng = False  # 정렬의 마지막 부재가 최소 길이 이하인지 체크
+            endngcount = 0
+            partlist = []
 
             for part in partdatas:
                 partcount = part.work_quantity - part.worked_quantity
                 for i in range(1, partcount + 1):
+                    totallen = totallen + part.length_cut
+                    difflen = inputlength - totallen
+                    # 길이가 많이 남았을때 끝단 최소 길이보다 큰것이 들어가는지 체크
+                    if difflen >= endminlen:
+                        if part.length_cut > endminlen:
+                            endok = True
+                    # 길이가 끝단 최소길이보다 작게 남을때
+                    elif difflen < endminlen:
+                        # 부재 길이가 가공 범위를 초과 할때 길이의 합에서 마지막 더한 가공 길이 차감후 다음 스탭으로
+                        if difflen < 0:
+                            totallen = totallen - part.length_cut
+                            continue
+                        # 부재 길이가 가공 범위를 초과 하지 않을때
+                        else:
+                            if part.length_cut > endminlen:
+                                endok = True
+                                endng = False
+                            # 마지막 부재가 끝단 최소 길이보다 작게 반복 루틴을 마무리 하는지 체크
+                            else:
+                                endng = True
+                                endngcount = endngcount + 1
+
                     partdict['material'] = part.view_data
                     partdict['length'] = part.length_cut
                     partdict['cutPoint'] = part.part_point
-                    list.append(partdict)
+                    partlist.append(partdict)
                     partdict = {}
 
-            # 배열의 인덱스를 돌면서 가공조합을 만든다.
-
-            totallen = 0  # 가공부재 길이
-            difflen =0  # 투입부재 잔량
-            endminlen = 1300  # 마지막 부재의 최소길이
-            endok = False  # 마지막 부재 있을때 True
-            partlist = []
-            count = 0
-
-            for index, value in enumerate(list):
-                totallen = totallen + value['length']
-                difflen = inputlength - totallen
-
-                if difflen >= endminlen:  # 길이가 많이 남음
-                    if value['length'] > endminlen:
-                        endok = True
-
-                elif difflen < endminlen:
-                    if difflen < 0:
-                        totallen = totallen - value['length']
-                        break
-                    else:
-                        if value['length'] > endminlen:
-                            endok = True
-
-                partlist.append(value)
-                del list[index]
-
-            # 응답하는 부재의 개수를 추가한다
+            # 정렬의 마지막 부재가 끝단 최소 길이보다 작을시 작은수만큼 꺼내서 맨앞으로 보내줌
+            if endng:
+                for i in range(1, endngcount + 1):
+                    end_m = partlist.pop(-1)
+                    partlist.insert(0, end_m)
 
             lastcount = len(partlist)
             lastdict = {}
@@ -1159,7 +1185,101 @@ class PressPartDataLoad(APIView):
 
 
 # ==============================================================================
-# press_machine ---  업 그룹 개별 작업 선택
+# press_machine_optimize ---  Part(view) 최적화 데이터 내려받기
+# ==============================================================================
+
+class PressPartDataOptimize(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            machine_id = request.data['machineID']
+            machineKey = request.data['machineKey']
+            if machineKey != 'smart-robot-007':
+                return Response(Error)
+
+            standard = request.data['standard']
+            inputlength = int(request.data['inputlength'])
+            if inputlength < 1300:
+                return Response(Error)
+
+            # ---------------------------------------------------------------
+            try:
+                partdatas = AutoPressMachine.objects.filter(machine_id=machine_id,
+                                                                status=False,
+                                                                work_select=True,
+                                                                standard=standard)
+            except AutoPressMachine.DoesNotExist:
+                return Response(Error)
+
+            # 먼저 해당 부재의 수량 만큼 배열로 정렬한다.
+            partdict = {}
+            totallen = 0  # 가공부재 길이
+            difflen =0  # 투입부재 잔량
+            endminlen = 1000  # 마지막 부재의 최소길이
+            minimumlen = 700  # 가공 부재 최소 길이(정렬에서 제외)
+            endok = False  # 마지막 부재 있을때 True
+            endng = False  # 정렬의 마지막 부재가 최소 길이 이하인지 체크
+            endngcount = 0
+            partlist = []
+
+            for part in partdatas:
+                partcount = part.work_quantity - part.worked_quantity
+                for i in range(1, partcount + 1):
+                    totallen = totallen + part.length_cut
+                    difflen = inputlength - totallen
+                    # 길이가 최소 가공 부재 길이보다 작을시 Pass 시킴
+                    if part.length_cut > minimumlen: 
+                        continue
+                    # 길이가 많이 남았을때 끝단 최소 길이보다 큰것이 들어가는지 체크
+                    if difflen >= endminlen:
+                        if part.length_cut > endminlen:
+                            endok = True
+                    # 길이가 끝단 최소길이보다 작게 남을때
+                    elif difflen < endminlen:
+                        # 부재 길이가 가공 범위를 초과 할때 길이의 합에서 마지막 더한 가공 길이 차감후 다음 스탭으로
+                        if difflen < 0:
+                            totallen = totallen - part.length_cut
+                            continue
+                        # 부재 길이가 가공 범위를 초과 하지 않을때
+                        else:
+                            if part.length_cut > endminlen:
+                                endok = True
+                                endng = False
+                            # 마지막 부재가 끝단 최소 길이보다 작게 반복 루틴을 마무리 하는지 체크
+                            else:
+                                endng = True
+                                endngcount = endngcount + 1
+
+                    partdict['material'] = part.view_data
+                    partdict['length'] = part.length_cut
+                    partdict['cutPoint'] = part.part_point
+                    partlist.append(partdict)
+                    partdict = {}
+
+            # 정렬의 마지막 부재가 끝단 최소 길이보다 작을시 작은수만큼 꺼내서 맨앞으로 보내줌
+            if endng:
+                for i in range(1, endngcount + 1):
+                    end_m = partlist.pop(-1)
+                    partlist.insert(0, end_m)
+
+            lastcount = len(partlist)
+            lastdict = {}
+            lastlist = []
+            for part in partlist:
+                lastdict['count'] = str(lastcount)
+                lastdict['material'] = part['material']
+                lastdict['length'] = str(part['length'])
+                lastdict['cutPoint'] = str(part['cutPoint'])
+                lastlist.append(lastdict)
+                lastdict = {}
+
+            return Response(lastlist)
+
+        except:
+            return Response(Error)
+
+
+# ==============================================================================
+# press_machine ---  작업 그룹 개별 선택
 # ==============================================================================
 
 class PressGselect(APIView):
@@ -1273,7 +1393,7 @@ class PressCutDataLoad(APIView):
                 m_dict = {}
                 cutlist = []
                 for cut in cutjson:
-                    m_dict['count'] = cutdata.part_point
+                    m_dict['count'] = str(cutdata.part_point)
                     m_dict['pointDist'] = cut['CUT'][0]
                     m_dict['macroName'] = cut['CUT'][1]
                     m_dict['cutParam'] = cut['CUT'][2]
@@ -1323,4 +1443,48 @@ class PressWorkedData(APIView):
                 return Response(Error)
         except:
             return Response(Error)
+
+
+# ==============================================================================
+# ==============================================================================
+# RPCM 로봇 형강 가공기
+# ==============================================================================
+# ==============================================================================
+
+
+# ==============================================================================
+# RPCM Camshot ---
+'''
+   ***  "result": "OK" or "NG" -- 응답시 추가, ng일때는 두번째 문자에 메세지 전달
+   "WorkSize": "EA 050*050*06T" -- 자재규격(ng일때는 애러 메세지로 보냄)
+   "StanValueX": "0"  -- 표준기준점 X
+   "StanValueY": "0"  -- 표준기준점 Y
+   "StanValueZ": "0"  -- 표준기준점 Z
+   "StanAdjustX": "0"  -- 교정기준값 X
+   "StanAdjustY": "0"  -- 교정기준값 Y
+   "StanAdjustZ": "0"  -- 교정기준값 Z
+   "SizeAdjustA: "0"  -- 자재크기보정 A
+   "SizeAdjustB: "0"  -- 자재크기보정 B
+   "SizeAdjustC: "0"  -- 자재크기보정 C
+   "SizeAdjustD: "0"  -- 자재크기보정 D
+   "BeamAdjustMH: "0"  -- 자재크기보정 중판높이
+'''
+# ==============================================================================
+
+class RpcmCamshot(APIView):
+    def post(self, request, *args, **kwargs):
+        try:
+            origin_image = request.FILES['image']
+            m_data = request.data['m_data']
+            MachineKey = request.data['machineKey']
+            if MachineKey != 'smart-robot-007':
+                return Response('Error')
+            index = m_data.find(',')
+            req_data = 'OK,' + m_data[index:]
+            # data_list = m_data.split(',')
+            # data_list.insert(0, 'OK')
+            return Response(req_data)
+
+        except:
+            return Response('Error')
 
