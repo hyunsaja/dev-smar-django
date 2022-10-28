@@ -8,7 +8,7 @@ urlpatterns = [
     # path('', admin.site.urls),
     path('admin/', admin.site.urls),
     path('code_master/', include('code_master.urls')),
-    path('cam_master/', include('cam_master.urls')),
+    # path('cam_master/', include('cam_master.urls')),
 ]
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

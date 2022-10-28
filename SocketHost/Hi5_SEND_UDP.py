@@ -27,9 +27,8 @@ def hi5_send(R_CMD, R_VALUE, UserStr):
         udpserver_addr = ("192.168.100.100", 8100)
         hi5_addr=('192.168.100.11', 8100)
 
-        # server
         sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)     # TCP : socket.SOCK_STREAM
-        sock.bind(udpserver_addr)
+        # sock.bind(udpserver_addr)
 
         resOK = True
         d_Num = 1        #일반(1) / 수직(13)
@@ -164,6 +163,7 @@ def hi5_send(R_CMD, R_VALUE, UserStr):
         else:
             send_str = R_CMD + "\n"         # <~ "CONNECTED   ", "DISCONNECTED" :12자리
             sock.sendto(send_str.encode(), hi5_addr)
+            msgFromServer = UDPClientSocket.recvfrom(bufferSize)
             Result_Str = 'OK,end_' + R_CMD
 
         sock.close()

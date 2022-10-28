@@ -21,7 +21,6 @@ class MachineGroup(models.Model):
         verbose_name_plural = "1. MACHINE GROUP"
         ordering = ["name", ]
 
-
 from core.models import Company
 
 class Machine(models.Model):

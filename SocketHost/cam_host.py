@@ -84,10 +84,12 @@ if __name__ == '__main__':
             devices = tlFactory.EnumerateDevices()
             if len(devices) == 0:  # 카메라가 검색이 안될때
                 try:
-                    
                     print('Connected by', addr)
                     recvdata = client_socket.recv(1024)
                     recvstr = recvdata.decode('utf-8').split(',')
+                    # recvstr = command, 절대원점, 측정위치(현재위치), 자재정보(작업물정보), 매크로정보(작업정보)
+                    # 측정위치(현재위치)는 먼저 로봇에게 받아서 사용
+                    # 절대원점과 자재와의 위치관계, 카메라(빔) 스케일, 로봇 TCP와 카메라와의 위치관계
                     print(recvstr)
                     command = recvstr[0]
                     
@@ -97,14 +99,14 @@ if __name__ == '__main__':
                         
                         data = {'m_data': recvdata,
                                 'machineKey': 'smart-robot-007'}
-                        msg = requests.post(posturl, data=data, timeout = 50).text
+                        msg = requests.post(posturl, data=data, timeout= 50).text
                         
                         R_Result = Hi5_SEND_UDP.hi5_send(recvstr[1], recvstr[2], recvstr[3])
                         client_socket.sendall(('C_ROBOT,' + R_Result).encode())                    
                     
                     elif 'cmd_robot' in command:
-                        F_Result = py_rpcm_func.rpcm_Func(recvstr[1], recvstr[2])
-                        client_socket.sendall(('C_FUNC,' + F_Result).encode())    
+                        R_Result = Hi5_SEND_UDP.hi5_send(recvstr[1], recvstr[2], recvstr[3])
+                        client_socket.sendall(('C_FUNC,' + R_Result).encode())
                                             
                     else:
                         msg='NG,not_command'
@@ -114,7 +116,6 @@ if __name__ == '__main__':
                     msg='NG,function_error'
                     client_socket.sendall(msg.encode())  
             else:
-                                      
                 for i in range(len(devices)):
                     if devices[i].GetSerialNumber() == '24044362':
                         camera = pylon.InstantCamera(tlFactory.CreateDevice(devices[i]))

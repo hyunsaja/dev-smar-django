@@ -40,7 +40,7 @@ INSTALLED_APPS = [
     'machine',
     # 'biz_master',
     # 'bot_master',
-    'cam_master',
+    # 'cam_master',
     'code_master',
 
     'corsheaders',   # CORS 관련 추가
@@ -147,7 +147,7 @@ STATIC_URL = '/static/'
 STATIC_ROOT = os.path.join(BASE_DIR,  '_static')
 
 
-MEDIA_URL = '/media/'
+# MEDIA_URL = '/media/'
 # MEDIA_ROOT = os.path.join(BASE_DIR, '_media')
 AWS_ACCESS_KEY_ID = 'AKIAVFAH4YUXSUJU3P4B'
 AWS_SECRET_ACCESS_KEY = '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'
@@ -158,7 +158,11 @@ AWS_S3_CUSTOM_DOMAIN = '%s.s3.%s.amazonaws.com' % (AWS_STORAGE_BUCKET_NAME,AWS_R
 AWS_S3_OBJECT_PARAMETERS = {
     'CacheControl': 'max-age=86400',
 }
+AWS_DEFAULT_ACL = 'public-read'
+AWS_LOCATION = 'media'
+MEDIA_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
 DEFAULT_FILE_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# MEDIA_ROOT = '%s/media' % STORAGE_PATH
 MEDIA_ROOT = os.path.join(BASE_DIR, 'path/to/store/my/files/')
 
 # Default primary key field type

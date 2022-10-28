@@ -1,18 +1,262 @@
 Program File Format Version : 1.6  MechType: 714(HH7-02)  TotalAxis: 6  AuxAxis: 0
-S1   MOVE P,P[201],S=V![211]mm/s,A=1,T=0
-S2   MOVE L,P[202],S=V![211]mm/s,A=1,T=0
+'
+SELECT V101$
+    CASE "ROBOT_ORIGIN"
+        GOTO 10
+    CASE "ROBOT_TIPPOS"
+        GOTO 11
+    CASE "ROBOT_VISPOS"
+        GOTO 12
+    CASE "ROBOT_MOVING"
+        GOTO 13
+    CASE "MACRO_EA001"
+        GOTO 50
+    CASE "MACRO_EA101"
+        GOTO 50
+    CASE "MACRO_EA021"
+        GOTO 50
+    CASE "MACRO_EA121"
+        GOTO 50
+    CASE "MACRO_EA031"
+        GOTO 50
+    CASE "MACRO_EA131"
+        GOTO 50
+    CASE "MACRO_EA032"
+        GOTO 50
+    CASE "MACRO_EA132"
+        GOTO 50
+    CASE "MACRO_EA033"
+        GOTO 50
+    CASE "MACRO_EA133"
+        GOTO 50
+    CASE "MACRO_EA034"
+        GOTO 50
+    CASE "MACRO_EA134"
+        GOTO 50
+    CASE "MACRO_EA002"
+        GOTO 51
+    CASE "MACRO_EA102"
+        GOTO 51
+    CASE "MACRO_EA022"
+        GOTO 51
+    CASE "MACRO_EA122"
+        GOTO 51
+    CASE "MACRO_EA015"
+        GOTO 52
+    CASE "MACRO_EA115"
+        GOTO 52
+    CASE "MACRO_EA016"
+        GOTO 52
+    CASE "MACRO_EA116"
+        GOTO 52
+    CASE "MACRO_EA005"
+        GOTO 53
+    CASE "MACRO_EA025"
+        GOTO 53
+    CASE "MACRO_EA004"
+        GOTO 54
+    CASE "MACRO_EA104"
+        GOTO 54
+    CASE "MACRO_EA024"
+        GOTO 54
+    CASE "MACRO_EA124"
+        GOTO 54
+    CASE "MACRO_EA003"
+        GOTO 55
+    CASE "MACRO_EA103"
+        GOTO 55
+    CASE "MACRO_EA023"
+        GOTO 55
+    CASE "MACRO_EA123"
+        GOTO 55
+    CASE "MACRO_EA011"
+        GOTO 56
+    CASE "MACRO_EA111"
+        GOTO 56
+    CASE "MACRO_EA013"
+        GOTO 57
+    CASE "MACRO_EA113"
+        GOTO 57
+    CASE "MACRO_EA014"
+        GOTO 57
+    CASE "MACRO_EA114"
+        GOTO 57
+END_SELECT
+END
+'
+10
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![1]mm/s,A=1,T=0
+     END
+'
+20
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![1]mm/s,A=1,T=0
+     END
+'
+30
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![1]mm/s,A=1,T=0
+     END
+'
+40
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![1]mm/s,A=1,T=0
+     END
+'
+50
+'001,101,021,121,031,131,032,132,033,133,034,134
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
      DO1=1
      WAIT DI1=1,1.00,S3
-     DELAY V![217]
-S3   MOVE L,P[203],S=V![212]mm/s,A=1,T=0
-S4   MOVE L,P[204],S=V![214]mm/s,A=1,T=0
-S5   MOVE L,P[205],S=(V![214]/2)mm/s,A=7,T=0
-S6   MOVE L,P[206],S=(V![214]/2)mm/s,A=7,T=0
-S7   MOVE L,P[207],S=(V![214]/2)mm/s,A=7,T=0
-S8   MOVE L,P[208],S=(V![214]/2)mm/s,A=7,T=0
-S9   MOVE L,P[209],S=(V![214]/2)mm/s,A=7,T=0
-S10  MOVE L,P[210],S=V![212]mm/s,A=0,T=0
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
      DO1=0
-     DELAY V![218]
-S11  MOVE L,P[211],S=V![211]mm/s,A=1,T=0
+     DELAY 0.5
+S5  MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+S6  MOVE L,P[6],S=V![6]mm/s,A=1,T=0
      END
+'
+51
+'002,102,022,122
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S6  MOVE L,P[6],S=V![6]mm/s,A=1,T=0
+S7  MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+     END
+'
+52
+'015,115,016,116
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE L,P[6],S=V![6]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S7  MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+S8  MOVE L,P[8],S=V![8]mm/s,A=1,T=0
+     END
+'
+53
+'005,025
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE L,P[6],S=V![6]mm/s,A=1,T=0
+S7   MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+S8   MOVE L,P[8],S=V![8]mm/s,A=1,T=0
+S9   MOVE L,P[9],S=V![9]mm/s,A=1,T=0
+S10   MOVE L,P[10],S=V![10]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S11  MOVE L,P[11],S=V![11]mm/s,A=1,T=0
+S12  MOVE L,P[12],S=V![12]mm/s,A=1,T=0
+     END
+'
+54
+'004,104,024,124
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE L,P[6],S=V![6]mm/s,A=1,T=0
+S7   MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+S8   MOVE L,P[8],S=V![8]mm/s,A=1,T=0
+S9   MOVE L,P[9],S=V![9]mm/s,A=1,T=0
+S10   MOVE L,P[10],S=V![10]mm/s,A=1,T=0
+S11   MOVE L,P[11],S=V![11]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S12  MOVE L,P[12],S=V![12]mm/s,A=1,T=0
+S13  MOVE L,P[13],S=V![13]mm/s,A=1,T=0
+     END
+'
+55
+'003,103,023,123
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE L,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE L,P[6],S=V![6]mm/s,A=1,T=0
+S7   MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+S8   MOVE L,P[8],S=V![8]mm/s,A=1,T=0
+S9   MOVE L,P[9],S=V![9]mm/s,A=1,T=0
+S10   MOVE L,P[10],S=V![10]mm/s,A=1,T=0
+S11   MOVE L,P[11],S=V![11]mm/s,A=1,T=0
+S12  MOVE L,P[12],S=V![12]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S13  MOVE L,P[13],S=V![13]mm/s,A=1,T=0
+S14  MOVE L,P[14],S=V![14]mm/s,A=1,T=0
+     END
+'
+56
+'011,111 원
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE C,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE C,P[6],S=V![6]mm/s,A=1,T=0
+S7   MOVE C,P[7],S=V![7]mm/s,A=1,T=0
+S8   MOVE C,P[8],S=V![8]mm/s,A=1,T=0
+S9   MOVE L,P[9],S=V![9]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S10  MOVE L,P[13],S=V![10]mm/s,A=1,T=0
+S11  MOVE L,P[14],S=V![11]mm/s,A=1,T=0
+     END
+'
+57
+'013,113,014,114 타원
+S1   MOVE L,P[1],S=V![1]mm/s,A=1,T=0
+S2   MOVE L,P[2],S=V![2]mm/s,A=1,T=0
+     DO1=1
+     WAIT DI1=1,1.00,S3
+     DELAY 0.5
+S3   MOVE L,P[3],S=V![3]mm/s,A=1,T=0
+S4   MOVE L,P[4],S=V![4]mm/s,A=1,T=0
+S5   MOVE C,P[5],S=V![5]mm/s,A=1,T=0
+S6   MOVE C,P[6],S=V![6]mm/s,A=1,T=0
+S7   MOVE L,P[7],S=V![7]mm/s,A=1,T=0
+S8   MOVE C,P[8],S=V![8]mm/s,A=1,T=0
+S9   MOVE C,P[9],S=V![9]mm/s,A=1,T=0
+S10   MOVE L,P[10],S=V![10]mm/s,A=1,T=0
+     DO1=0
+     DELAY 0.5
+S11  MOVE L,P[11],S=V![11]mm/s,A=1,T=0
+S12  MOVE L,P[12],S=V![12]mm/s,A=1,T=0
+     END
+
+

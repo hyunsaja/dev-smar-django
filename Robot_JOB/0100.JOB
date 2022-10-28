@@ -1,101 +1,57 @@
 Program File Format Version : 1.6  MechType: 714(HH7-02)  TotalAxis: 6  AuxAxis: 0
-DIM lstart AS Integer
 DIM ls_BUF AS String
-'-(4*6*10)
 '
-IF lstart<>1 THEN
-	'¿Ã¥ı≥› º≥¡§ -----------
-	ENET1.IP="192.168.100.100"
-	ENET1.LPORT=8100
-	ENET1.RPORT=8100
-	ENET1.OPEN 1
-	CLR_RBUF ENET1
-	_TEINPUT=13
-	_TEINPUT=10
-	lstart=1
-	'JOB¿¸º€≈ÎΩ≈ø¨∞·
-	'PRINT ENET1,"REQUEST_JOB"
-ENDIF
+10
+'ÏÉÅÎåÄÏùò IPÏ£ºÏÜå
+ENET1.IP="192.168.100.100"
+'Ï†úÏñ¥Í∏∞ ÏûêÏã†Ïùò PortÎ≤àÌò∏
+ENET1.LPORT=8100
+'ÌÜµÏã†ÏÉÅÎåÄÏùò PortÎ≤àÌò∏
+ENET1.RPORT=8100
+'ÏïÑÏä§ÌÇ§Î¨∏Ïûê Í≥µÎ∞±Ïùò Ïã≠ÏßÑÏàò
+'_TEINPUT=13 :
+'ÏïÑÏä§ÌÇ§ Ï§ÑÎ∞îÍøàÏùò Ïã≠ÏßÑÏàò
+_TEINPUT=10
+ENET1.OPEN 1
 '
-'
-10   '*START_R
-'∞·∞˙¿¿¥‰¥Î±‚1
+20
+CLR_RBUF ENET1
 DELAY 0.5
-INPUT ENET1,V40$
-DELAY 0.5
-PRINT #0,V40$
+INPUT ENET1,V100$
+PRINT #0,V100$
 '
-'∞·∞˙«ÿºÆ1
-V41$=LEFT$(V40$,12)
-SELECT V41$
-	CASE "CONTINUE    "
-		PRINT ENET1,"CONTINUE_OK"
-		'GOSUB *START_R
-		GOTO 10
-	CASE "CONNECTED   "
-		'ø¨∞·»Æ¿Œ
-		PRINT ENET1,"CONNECTED_OK"
-		'*START_REPEAT
-		GOTO 10
-	CASE "DISCONNECTED"
-		'ø¨∞·¡æ∑·
-		PRINT ENET1,"DISCONNECTED_OK"
-		ENET1.OPEN 0
-		lstart=0
-		END
-END_SELECT
-
-'JOB √≥∏Æ : ¡§ªÛ ~ π›∫π
-V42$=MID$(V40$,14,7)
-V400%=VAL(V42$)
-V43$=MID$(V40$,23,7)
-V399%=VAL(V43$)
+'CMD
+V101$=LEFT$(V100$,12)
 '
-V320%=30
-FOR V310%=1 TO 12
-	V44$=MID$(V40$,V320%,8)
-	V![210+V310%]=VAL(V44$)
-	V320%=30+V310%*8
-NEXT
-PRINT ENET1,V40$
-'DELAY 0.02
+'POINT_QUANTITY
+V102$=MID$(V100$,14,1)
+V102%=VAL(V102$)
 '
-LP[20]=(0,0,0,0,0,0,&H0081)
-FOR V330%=1 TO V399%
-	'∞·∞˙¿¿¥‰¥Î±‚2
-	INPUT ENET1,V50$,8,*NO_POSE
-	'∞·∞˙«ÿºÆ2
-	LP[20].X=VAL(MID$(V50$,1,9))
-	LP[20].Y=VAL(MID$(V50$,10,9))
-	LP[20].Z=VAL(MID$(V50$,19,9))
-	LP[20].RX=VAL(MID$(V50$,28,9))
-	LP[20].RY=VAL(MID$(V50$,37,9))
-	LP[20].RZ=VAL(MID$(V50$,46,9))
-	LP[20].CFG=&H0609
-	P[200+V330%]=LP[20]
-	PRINT ENET1,V50$
-	'DELAY 0.02
+'BEGIN_POINT
+V103$=MID$(V100$,16,2)
+V103%=VAL(V103$)
+'
+'POS DATA START POINT
+V101%=19
+'
+FOR V102%=1 TO V100%
+	P[V102%+V103%].X=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].Y=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].Z=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].RX=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].RY=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].RZ=VAL(MID$(V100$,V101%,6))
+	V101%=V101%+7
+	P[V102%+V103%].CFG=&H0609
+	'SPEED
+	V![V102%+V103%]=VAL(MID$(V100$,V101%,5))
+	V101%=V101%+6
 NEXT
 '
-'sub ∑Œ∫ø¿€æ˜ »£√‚
-CALL V400%
-PRINT ENET1,"JOBRUNOK"
-'*START_REPEAT
 GOTO 10
-'
-'øπø‹ √≥∏Æ -----------
-'*NO_RESP
-'PRINT #0,"JOB ø‰√ªø° ¥Î«— ¿¿¥‰¿Ã æ¯Ω¿¥œ¥Ÿ."
-'
-'*INV_RES
-'PRINT #0,"¿Ø»ø«œ¡ˆ æ ¿∫ JOB ¿¿¥‰¿‘¥œ¥Ÿ."
-'
-*NO_POSE
-PRINT #0,"ø‰√ªø° ¥Î«— POSE ¿¿¥‰¿Ã æ¯Ω¿¥œ¥Ÿ."
-ENET1.OPEN 0
-lstart=0
 END
-'*ERR_RES
-'PRINT #0,"JOB ¿¿¥‰ ø°∑Øƒ⁄µÂ=";V201%
-'*START_REPEAT
-GOTO 10
