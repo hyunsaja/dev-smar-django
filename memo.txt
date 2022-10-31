@@ -1,56 +1,56 @@
 ---------------------------------------------------------------------------
 [ db 최초 빌드시 migrations 순서]
 ---------------------------------------------------------------------------
-1. settings의 모든 앱을 주석처리하고 migrate 한다.
-    project의 urls에서도 엡라우팅을 주석 처리한다
-    python manage.py migrate
+    1. settings의 모든 앱을 주석처리하고 migrate 한다.
+        project의 urls에서도 엡라우팅을 주석 처리한다
+        python manage.py migrate
 
-2. core 앱의 user detail 부분을 models, admin 파일에서 주석처리하고 마이그레이션 실행
-    setting의 app 인스톨 부분에 core를 주석푼다
-    python manage.py makemigrations
-    python manage.py migrate
+    2. core 앱의 user detail 부분을 models, admin 파일에서 주석처리하고 마이그레이션 실행
+        setting의 app 인스톨 부분에 core를 주석푼다
+        python manage.py makemigrations
+        python manage.py migrate
 
-3. core 앱의 user detail 부분을 주석 풀고 마이그레이션 한다.
-    python manage.py makemigrations
-    python manage.py migrate
+    3. core 앱의 user detail 부분을 주석 풀고 마이그레이션 한다.
+        python manage.py makemigrations
+        python manage.py migrate
 
-4. machine 앱을 마이그레이션 한다.
-    setting의 app 인스톨 부분에 machine 의 주석푼다
-    python manage.py makemigrations
-    python manage.py migrate
+    4. machine 앱을 마이그레이션 한다.
+        setting의 app 인스톨 부분에 machine 의 주석푼다
+        python manage.py makemigrations
+        python manage.py migrate
 
-5. 나머지 앱들을 모두 풀고 마이그레이션 한다.
-    상동
+    5. 나머지 앱들을 모두 풀고 마이그레이션 한다.
+        상동
 
-6. python manage.py createsuperuser
+    6. python manage.py createsuperuser
 
-7. python manage.py runserver
+    7. python manage.py runserver
 
 
 --------------------------------------------------------------------------------
 [유저 관리]
 --------------------------------------------------------------------------------
-0. code
-    업무부서 : 0 (기술부:1, 업업부:2, 관리부:3)
-1. 미주산업
-    회사 : miju / miju1234
-    유저 : miju_user_1 / miju1234 / 유저id : 2
-    유저 : miju_user_2 / miju1234 / 유저id : 3
-    꼬리표마킹기 : miju_mark_machine / 머신id : 1
-    앵글가공기 : miju_agcut_machine / 머신id : 2
-    로봇자동용접기 : miju_robot_weld_machine
-2. 이룸산업
-    회사 : irum / irum1234
-    유저 : irum_user_1 / irum1234 / 유저id : 4
-    유저 : irum_user_2 / irum1234 / 유저id : 5
-    스텐션프레스 : irum_press_machine / 머신id : 3
-    꼬리표마킹기 : irum_mark_machine
-3. 정동중공업
-    회사 : jungdong / jungdong1234
-    유저 : jd_user_1 / jungdong1234
-    유저 : jd_user_2 / jungdong1234
-    로봇용접기 : jd_robot_weld_machine
-    꼬리표마킹기 : jd_mark_machine
+    0. code
+        업무부서 : 0 (기술부:1, 업업부:2, 관리부:3)
+    1. 미주산업
+        회사 : miju / miju1234
+        유저 : miju_user_1 / miju1234 / 유저id : 2
+        유저 : miju_user_2 / miju1234 / 유저id : 3
+        꼬리표마킹기 : miju_mark_machine / 머신id : 1
+        앵글가공기 : miju_agcut_machine / 머신id : 2
+        로봇자동용접기 : miju_robot_weld_machine
+    2. 이룸산업
+        회사 : irum / irum1234
+        유저 : irum_user_1 / irum1234 / 유저id : 4
+        유저 : irum_user_2 / irum1234 / 유저id : 5
+        스텐션프레스 : irum_press_machine / 머신id : 3
+        꼬리표마킹기 : irum_mark_machine
+    3. 정동중공업
+        회사 : jungdong / jungdong1234
+        유저 : jd_user_1 / jungdong1234
+        유저 : jd_user_2 / jungdong1234
+        로봇용접기 : jd_robot_weld_machine
+        꼬리표마킹기 : jd_mark_machine
 
 
 ----------------------------------------------------------------------------

@@ -6,6 +6,9 @@
 
 import json
 import math
+import time
+
+import numpy
 from rest_framework.response import Response
 from django.http import HttpResponse
 from django.shortcuts import render
@@ -954,13 +957,11 @@ class UploadPressExcelData(APIView):
         try:
             file = request.FILES['file_excel']
             machine_id = request.data['extra_machineID']
-            print(machine_id)
             # data_only=Ture로 해줘야 수식이 아닌 값으로 받아온다.
             wb = load_workbook(file, read_only=True)
             sheet = wb.worksheets[0]
 
             author = request.user.id
-            print(author)
             key_list = ['temp', 'ship_no', 'por_no', 'seq_no', 'block_no', 'pcs_no',
                         'part_no', 'standard', 'length_dwg', 'work_quantity', 'cutlist']
             data_list = []
@@ -998,7 +999,6 @@ class UploadPressExcelData(APIView):
                     cutdict['CUT'] = clist
                     cutlist.append(cutdict)
                     cutdict= {}
-                print(cutlist)
                 td['cutlist'] = cutlist
                 # 마지막 앤드컷 정보를 읽는다
                 macroName = cutlist[count-1]['CUT'][1]
@@ -1017,7 +1017,7 @@ class UploadPressExcelData(APIView):
                 elif macroName == 'FBP04':
                     td['length_cut'] = int(td['length_dwg']) + 52
                 else:
-                    return Response(Error)
+                    return Response("m_Error")
                 # -------------------------------
 
                 # view 데이터 자동생성
@@ -1033,15 +1033,18 @@ class UploadPressExcelData(APIView):
                 data_list.append(td)
                 td = {}
             wb.close()
-
+            # print(data_list)
             serializer = AutoPressSerializer(data=data_list, many=True)
             if serializer.is_valid():
                 serializer.save()
                 return Response(Ok)
             else:
-                return Response(Error)
+                print(serializer.errors)
+                return Response(serializer.errors,
+                                status=status.HTTP_400_BAD_REQUEST)
+                # return Response("s_Error")
         except:
-            return Response(Error)
+            return Response("e_Error")
 
 
 # ==============================================================================
@@ -1452,49 +1455,17 @@ from .camshot.rpcm_s300._lib import __find as F
 import cv2
 import numpy as np
 import requests
+from django.core.files.base import ContentFile
+import uuid
 # ==============================================================================
 # RPCM Camshot ---
 # ==============================================================================
-'''
-    1. 기본 ~ 자재규격, 표준기준점X,Y,Z, 교정값X,Y,Z, 자재 실제 크기 보정A,B
-    2. 빔 전용 ~ 자재 실제 크기 보정C,D, I/H 빔 중판 높이 보정값
-   ***  "result": "OK" or "NG" -- 응답시 추가, ng일때는 두번째 문자에 메세지 전달
-   "WorkSize": "EA 050*050*06T" -- 자재규격(ng일때는 애러 메세지로 보냄)
-   "StanValueX": "0"  -- 표준기준점 X
-   "StanValueY": "0"  -- 표준기준점 Y
-   "StanValueZ": "0"  -- 표준기준점 Z
-   "StanAdjustX": "0"  -- 교정기준값 X
-   "StanAdjustY": "0"  -- 교정기준값 Y
-   "StanAdjustZ": "0"  -- 교정기준값 Z
-   "SizeAdjustA: "0"  -- 자재크기보정 A
-   "SizeAdjustB: "0"  -- 자재크기보정 B
-   "SizeAdjustC: "0"  -- 자재크기보정 C
-   "SizeAdjustD: "0"  -- 자재크기보정 D
-   "BeamAdjustMH: "0"  -- 자재크기보정 중판높이
-'''
 
 class RpcmCamshot(APIView):
     def post(self, request, *args, **kwargs):
-        # try:
-        #     origin_image = request.FILES['image']
-        #     m_data = request.data['m_data']
-        #     MachineKey = request.data['machineKey']
-        #     if MachineKey != 'smart-robot-007':
-        #         return Response('Error')
-        #     index = m_data.find(',')
-        #     req_data = 'OK,' + m_data[index:]
-        #     # data_list = m_data.split(',')
-        #     # data_list.insert(0, 'OK')
-        #     return Response(req_data)
-        #
-        # except:
-        #     return Response('Error')
-
-        # sys.path.append('./camshot')
-
         try:
+            start = time.time()
             origin_image = request.FILES['image']
-            image = origin_image
             # cam_name = request.data['cam_name']
             m_data = request.data['m_data']
             MachineKey = request.data['machineKey']
@@ -1503,10 +1474,35 @@ class RpcmCamshot(APIView):
 
             data_list = m_data.split(',')
             cam_name = f'miju_rpcm_s300_{data_list[1]}'
-
-            # EA 50*50*4T, UA 125*75*7/7T, CH 100*50*6/8.5T,
-            # IB 150*125*8.5/14T, HB 125*125*6.5/9T, PI 103A-114.3, SP 75*75
             kind = data_list[1].split(' ')
+
+            # 업로드된 데이터 먼저 저장후 영상 처리 할때 적용 할 것(삭제금지)-----------------------------
+            uploaddata = {'cam_name': cam_name, 'origin_image': origin_image}
+            serializer = SmartCamSerializer(data=uploaddata)
+            if serializer.is_valid():
+                serializer.save()
+            else:
+                return Response('NG,Serializer_Error')
+
+            query = SmartCamMachine.objects.filter(cam_name= cam_name).first()
+            img_path = query.origin_image
+            # url을 통해서 이미지 읽어 올때 ----------------------------------------
+            image_nparray = np.asarray(bytearray(requests.get(img_path.url).content), dtype=np.uint8)
+            image = cv2.imdecode(image_nparray, cv2.IMREAD_GRAYSCALE)
+            # 인터넷에 다른 방법이 있길래 참고 삼아 적어둠
+            # image = cv2.imdecode(numpy.frombuffer(myfile, numpy.uint8), cv2.IMREAD_UNCHANGED)
+            # ------------------------------------------------------------------
+
+            # 비젼 처리 파트 ---
+            # =========================================================================================
+            # >>> 호출하는 부분 ========================================================================
+            # =========================================================================================
+
+            _TYPE = kind[0]
+            obj = F.MyClass(_TYPE)
+            (result, dst,(topX, topY, middleX, middleY, bottomX, bottomY)) = obj.Start(data_list[1], image)
+
+            # <<< =====================================================================================
 
             # sim_point 초기화 --------------------------------------------------
             sim_point = {}
@@ -1523,116 +1519,111 @@ class RpcmCamshot(APIView):
             sim_point["SizeAdjustC"] = data_list[10]
             sim_point["SizeAdjustD"] = data_list[11]
             sim_point["BeamAdjustMH"] = data_list[12]
+            sim_point['result_data'] = [result, topX, topY, middleX, middleY,
+                                        bottomX, bottomY]
 
-            # 업로드된 데이터 처리 (정상)-------------------------------------------
-            uploaddata = {'cam_name': cam_name, 'origin_image': origin_image}
-            serializer = SmartCamSerializer(data=uploaddata)
-            if serializer.is_valid():
-                serializer.save()
+            # cam_data(해당 자재의 영상인식 평균 데이터) 만들기
+            cam_data = ''
+            if SmartCamMachine.objects.filter(cam_name=f'{cam_name}_OK').exists():
+                _query = SmartCamMachine.objects.filter(cam_name=f'{cam_name}_OK').first()
+                cam_data = _query.cam_data
             else:
-                return Response('NG,Serializer_Error')
-            # ----------------------------------------------------------------
-            # 아래 부분은 애러남-------------------------------------------------
-            query = SmartCamMachine.objects.filter(cam_name= cam_name).last()
-            print(query.cam_name)
-            img_path = query.origin_image
-            print(img_path.url)
-            # img_path = origin_image/22/10/28/EA.bmp
-            # img_path.url = https://smart-robot-media.s3.ap-northeast-2.amazonaws.com/origin_image/22/10/28/EA.bmp
+                cam_data = f'{topX},{topY},{middleX},{middleY},{bottomX},{bottomY}'
 
-            image_nparray = np.asarray(bytearray(requests.get(img_path.url).content), dtype=np.uint8)
-            image = cv2.imdecode(image_nparray, cv2.IMREAD_GRAYSCALE)
-
-            print(type(image))
-
-            # -----------------------------------------------------------------
-
-            # 비젼 처리 파트 ---
-            # =========================================================================================
-            # >>> 호출하는 부분 ========================================================================
-            # =========================================================================================
-            _TYPE = kind[0]
-            # index = 1
-            obj = F.MyClass(_TYPE)
-            print('1')
-            (result, dst,(topX, topY, middleX, middleY, bottomX, bottomY)) = obj.Start(data_list[1], image)
-
-            print(result,(topX, topY, middleX, middleY, bottomX, bottomY))
-            # <<< =====================================================================================
-
-            sim_point['result_data'] = [result, topX, topY, middleX, middleY, bottomX, bottomY]
-
-            # cam_data 만들기
+            # 영상 인식의 평균 데이터 (최초 실행시는 최초 영상 인식 데이터) - 현장 캘리브레이션 적용
+            avr = cam_data.split(',')
             (tX, tY, mX, mY, bX, bY) = (0.0, 0.0, 0.0, 0.0, 0.0, 0.0)
-            cam_data = '0,0,0,0,0,0'
-
             if result is None:  # 영상처리가 정상 처리 되었을때
-                cam_name= f'{cam_name}_OK'
-                average = cam_data
-                avr = average.split(',')
-                print(avr)
-                tX = float(topX) - float(avr[0])
-                tY = float(topY) - float(avr[1])
-                mX = float(middleX) - float(avr[2])
-                mY = float(middleY) - float(avr[3])
-                bX = float(bottomX) - float(avr[4])
-                bY = float(bottomY) - float(avr[5])
-                print('bbb')
-                # 좌표 편차의 평균이 일정 값 이하일때
-                print(tX, tY)
-                if int(tX) < 5:
-                    print('aaa')
-                    _tX = (float(topX) + float(avr[0])) / 2
-                    _tY = (float(topY) + float(avr[1])) / 2
-                    _mX = (float(middleX) + float(avr[2])) / 2
-                    _mY = (float(middleY) + float(avr[3])) / 2
-                    _bX = (float(bottomX) + float(avr[4])) / 2
-                    _bY = (float(bottomY) + float(avr[5])) / 2
-
+                query.cam_name = cam_name + '_OK'
+                tX = float(avr[0]) - float(topX)
+                tY = float(avr[1]) - float(topY)
+                mX = float(avr[2]) - float(middleX)
+                mY = float(avr[3]) - float(middleY)
+                bX = float(avr[4]) - float(bottomX)
+                bY = float(avr[5]) - float(bottomY)
+                if abs(tX) < 5 and abs(tY) < 10 and abs(mX) < 5 and abs(mY) < 10 and \
+                        abs(bX) < 5 and abs(bY) < 10:
+                    _tX = (float(topX) + (float(avr[0]) * 10)) / 11
+                    _tY = (float(topY) + (float(avr[1]) * 10)) / 11
+                    _mX = (float(middleX) + (float(avr[2]) * 10)) / 11
+                    _mY = (float(middleY) + (float(avr[3]) * 10)) / 11
+                    _bX = (float(bottomX) + (float(avr[4]) * 10)) / 11
+                    _bY = (float(bottomY) + (float(avr[5]) * 10)) / 11
                     # cam_data = 자재 규격별 영상 처리 결과의 축척된 평균 데이터 update
-                    cam_data = f'{result},{str(_tX)},{str(_tY)},{str(_mX)},{str(_mY)},{str(_bX)},{str(_bY)}'
+                    cam_data = f'{str(_tX)},{str(_tY)},{str(_mX)},{str(_mY)},{str(_bX)},{str(_bY)}'
+
+                    myUUID = uuid.uuid1()
+                    ret, buf = cv2.imencode('.jpg', dst)  # dst: nd array to img
+                    content = ContentFile(buf.tobytes())
+                    query.result_image.save(f'{myUUID}.jpg', content, save=False)
+                    query.sim_point= sim_point
+                    query.cam_data= cam_data
+                    query.save()
 
                 else:   # 좌표 편차의 평균이 일정 값 이상일때
-                    # cam_data = 자재 규격별 영상 처리 결과의 축척된 평균 데이터 유지
-                    cam_data = f'{result},{avr[0]},{avr[1]},{avr[2]},{avr[3]},{avr[4]},{avr[5]}'
+                    query.cam_name= cam_name + '_DIFF'
+
+                    myUUID = uuid.uuid1()
+                    ret, buf = cv2.imencode('.jpg', dst)  # dst: nd array to img
+                    content = ContentFile(buf.tobytes())
+                    query.result_image.save(f'{myUUID}.jpg', content, save=False)
+                    query.sim_point= sim_point
+                    query.cam_data= cam_data
+                    query.save()
+
+                    result_str= f'NG, 인식 편차가 심합니다. 자재 원점을 수동으로 조정하세요'
+                    return Response(result_str)
+
+            # 영상 인식 애러 발생시(추후 애러 코드 분류 및 반영 할 것)
             else:
-                cam_name= cam_name + '_NG'
+                query.cam_name= cam_name + '_NG'
 
-            # query.result_image= dst
-            # query.sim_point= sim_point
-            # query.cam_data= cam_data
-            # query.cam_name= cam_name
-            # query.save()
+                myUUID = uuid.uuid1()
+                ret, buf = cv2.imencode('.jpg', dst)  # dst: nd array to img
+                content = ContentFile(buf.tobytes())
+                query.result_image.save(f'{myUUID}.jpg', content, save=False)
+                query.sim_point= sim_point
+                cam_data = f'{topX},{topY},{middleX},{middleY},{bottomX},{bottomY}'
+                query.cam_data= cam_data
+                query.save()
 
-            # 결과 데이터 연산하여 리턴하기------------------------------------------
-            print('12')
+                result_str= f'NG, 영상인식 애러 >> 자재 원점을 수동으로 조정하세요'
+                return Response(result_str)
+            # ---------------------------------------------------------------------<<<
+
+            # 위 부분 삭제시 tX~bY를 topX~bottomY로 바꿀것-----------------------------|||
+
+            # 영상인식 OK일때 보정값 계산하기------------------------------------------->>>
 
             # adjust 보정 좌표값 계산
             # EA 50*50*4T, UA 125*75*7/7T, PI 103A-114.3, SP 75*75
             # CH 100*50*6/8.5T, IB 150*125*8.5/14T, HB 125*125*6.5/9T
             # 스케일계산: 720(거리)- f_h * 2.4(sen_h) / 4(focal length) = 432mm(1080px)
-            print('9')
+
             if result is None:
                 if kind[0] == 'EA' or kind[0] == 'UA':
                     m_h = data_list[1].split('*')
                     f_h = 720 - float(m_h[1]) * 0.77
                     focal = round((f_h * 2.4 / 4 / 1080), 1)   # mm/picel
-                    sim_point['StanAdjustX'] = str(mX * focal)
-                    sim_point['StanAdjustY'] = str(mY * focal)
+                    _aX = (tX + mX + bX)/3
+                    sim_point['StanAdjustX'] = str(round((_aX * focal), 1))
+                    _aY = (tY + mY + bY)/3
+                    sim_point['StanAdjustY'] = str(round((_aY * focal), 1))
                 elif kind[0] == 'CH' or kind[0] == 'HB' or kind[0] == 'IB':
                     m_h = data_list[1].split('*')
                     f_h = 720 - float(m_h[1])
                     focal = round((f_h * 2.4 / 4 / 1080), 1)   # mm/picel
-                    sim_point['StanAdjustX'] = str(bX * focal)
-                    sim_point['StanAdjustY'] = str(bY * focal)
-                    sim_point["SizeAdjustA"] = str(-(tY * focal))
+                    sim_point['StanAdjustX'] = str(round((bX * focal), 1))
+                    sim_point['StanAdjustY'] = str(round((bY * focal), 1))
+                    sim_point["SizeAdjustA"] = str(round((tY * focal), 1))
                 elif kind[0] == 'PI':
                     m_h = data_list[1].split('-')
                     f_h = 720 - float(m_h[1])
                     focal = round((f_h * 2.4 / 4 / 1080), 1)   # mm/picel
-                    sim_point['StanAdjustX'] = str(mX * focal)
+                    sim_point['StanAdjustX'] = str(round((mX * focal), 1))
                 else:
                     pass
+
                 stX = sim_point["StanValueX"]
                 stY = sim_point["StanValueY"]
                 stZ = sim_point["StanValueZ"]
@@ -1647,8 +1638,9 @@ class RpcmCamshot(APIView):
                 result_str = f'{sim_point["cmd"]},{sim_point["WorkSize"]},{stX},{stY},{stZ},' \
                              f'{adX},{adY},{adZ},{szA},{szB},{szC},{szD},{bmH}'
             else:
-                result_str= f'NG, 애러코드: {result} >> 원점을 수동으로 조정하세요'
+                result_str= f'NG, 애러코드: {result} >> 자재 원점을 수동으로 조정하세요'
 
+            # print("time :", time.time() - start)
             return Response(result_str)
 
         except Exception as ee:

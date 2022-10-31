@@ -43,10 +43,10 @@ def GetStaticInfo(path, type):
 	arr = path.split('-')
 
 	(w, t) = arr[1:3]
-	if w[0] == '0' :
+	if w[0] == '0':
 		w = w[1:]
 
-	if t[0] == '0' :
+	if t[0] == '0':
 		t = t[1:]
 
 	_realW = float(w)
@@ -64,10 +64,11 @@ def GetStaticInfo(path, type):
 
 def GetParsingData(data, index=None):
 	(w, f, t1, t2) = (0.0, 0.0, 0.0, 0.0)
-	# print(data)
+
 	data_ = data.strip().lower()
 	# print(data_)
 	(type_, spec_)= data_.split(' ')[0:2]
+	print(type_, spec_)
 
 	spec_ = spec_.replace('a', '')
 	spec_ = spec_.replace('t', '')

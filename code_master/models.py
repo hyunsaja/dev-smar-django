@@ -62,7 +62,7 @@ class AutoMarkMachine(models.Model):
 
 class RpcagMachine(models.Model):
     id = models.AutoField(primary_key=True)
-    machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)  #
+    machine_id = models.ForeignKey(Machine, on_delete=models.CASCADE)
 
     standard = models.CharField('자재규격', max_length=20)                       # 자재 규격
     texture = models.CharField('자재재질', max_length=10)                        # 자재 재질
@@ -169,18 +169,18 @@ class AutoPressMachine(models.Model):
 
 class SmartCamMachine(models.Model):
     id = models.AutoField(primary_key=True)
-    cam_name = models.CharField(max_length=50)
+    cam_name = models.CharField(max_length=50, blank=True, null=True)
     cam_data = models.CharField(max_length=250, blank=True, null=True)
-    origin_image = models.ImageField(upload_to='origin_image/%y/%m/%d/')
-    result_image = models.ImageField(upload_to='result_image/%y/%m/%d/', blank=True, null=True)
-    nc_file = models.FileField(upload_to='nc_file/%Y/%m/%d/', blank=True, null=True)
+    origin_image = models.ImageField(upload_to='origin_image/%y/%m/%d')
+    result_image = models.ImageField(upload_to='result_image/%y/%m/%d', blank=True, null=True)
+    nc_file = models.FileField(upload_to='nc_file/%Y/%m/%d', blank=True, null=True)
     sim_point = models.JSONField(blank=True, null=True)
 
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return f'[{self.id}] :: {self.cam_name} :: {self.result_image} :: {self.nc_file}'
+        return f'[{self.id}] :: {self.cam_name} :: {self.origin_image} :: {self.result_image}'
 
     class Meta:
         # managed = False

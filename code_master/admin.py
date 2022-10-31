@@ -28,7 +28,8 @@ class MarkMachineAdmin(admin.ModelAdmin):
         else:
             userComp = UserDetail.objects.get(user=request.user)
             extra_context = {
-                'mid': list(Machine.objects.filter(company_id=userComp.company))
+                # 'mid': list(Machine.objects.filter(company_id=userComp.company))
+                'mid': 1
             }
         print(extra_context)
         shs = super(MarkMachineAdmin, self).changelist_view(
@@ -175,7 +176,8 @@ class AutoPressMachineAdmin(admin.ModelAdmin):
         else:
             userComp = UserDetail.objects.get(user=request.user)
             extra_context = {
-                'mid': list(Machine.objects.filter(company_id=userComp.company))
+                # 'mid': list(Machine.objects.filter(company_id=userComp.company))
+                'mid': 3
             }
         print(extra_context)
         shs = super(AutoPressMachineAdmin, self).changelist_view(
@@ -221,4 +223,4 @@ from django.utils.html import format_html
 from code_master.models import SmartCamMachine
 @admin.register(SmartCamMachine)
 class SmartCamMachineAdmin(admin.ModelAdmin):
-    list_display = ("cam_name", "cam_data", "origin_image", "result_image", "updated_at")
+    list_display = ("id", "cam_name", "cam_data", "origin_image", "result_image", "updated_at")
